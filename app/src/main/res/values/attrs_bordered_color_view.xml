@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="BorderedColorView">
+        <attr name="borderColor" format="color" />
+        <attr name="borderWidth" format="dimension" />
+        <attr name="borderRadius" format="dimension" />
+    </declare-styleable>
+</resources>

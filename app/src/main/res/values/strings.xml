@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">MyGarage</string>
+
+    <string name="text_main">Click an item to edit it or the button to add an item.</string>
+    <string name="text_main_trash">Swipe an item to undelete it.</string>
+    <!--Action bar labels-->
+    <string name="action_settings">Settings</string>
+    <string name="action_info">Information</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="edit_mode">Edit Mode</string>
+
+    <!--Hints/Labels-->
+    <string name="hint_model">Model</string>
+    <string name="hint_owner">Owner</string>
+    <string name="hint_make">Make</string>
+    <string name="hint_license">License</string>
+    <string name="hint_state">State</string>
+    <string name="hint_color">Color</string>
+    <string name="hint_year">Year</string>
+
+    <!--Buttons-->
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_add">Add</string>
+    <string name="btn_ok">OK</string>
+
+    <!--Alerts-->
+    <string name="alert_cancel">Are you sure you wish to cancel?</string>
+    <string name="alert_delete">Car deleted</string>
+
+    <!--Activity Titles-->
+    <string name="title_activity_information">Information</string>
+    <string name="title_activity_edit">Edit Car</string>
+    <string name="title_activity_add">Add Car</string>
+
+    <string name="car_not_found">Error: Car Not Found</string>
+
+    <string name="acknowledgements"><b>MyGarage v1.0</b>\n
+<b>Created By:</b>\n
+James Hollowell &lt;jthollo@clemson.edu&gt;\n
+Created for the Spring 2017 section of CPSC 4820\n\n
+<b>Information</b>\n\n
+This application is designed to keep an inventory of vehicles\' basic information, with plans for expansion in the future.\n
+ - To add a vehicle, tap the add button.\n
+ - To edit a vehicle, tap it\'s entry in the list, and toggle edit mode in the top right corner.\n
+ - To reorder the list, simply long press and drag the vehicle, or tap and drag the handle on the vehicle.\n
+ - To delete a vehicle, swipe it off the list. This sends it to the trashcan, where you can later restore it.\n\n
+When using either the add or edit activities, the save button only appears when changes occur. Additionally, making changes forces the cancel button to require additional confirmation.\n\n
+
+<b>What\'s new</b>\n\n
+This application uses Android\'s DataBinding library to simplify some code with the UI. It also uses a SQLite database to store the information. The design should also allow for rotation by utilizing the scrolling. Finally, the app implements gestures for interacting with the RecyclerView.\n
+This application also uses an external database and external web application to facilitate users moving between a web and multiple phones.\n\n
+
+<b>Acknowledgements</b>\n\n
+StackOverflow - Multiple small problems\n
+<a href="https://developer.android.com/guide/index.html">Android Developer Site</a> - Tutorials and API documentation\n
+<a href="https://unsplash.com/search/road?photo=EeEx8zpOESA">Unsplash</a> - the original background photo.\n
+<a href="https://www.udemy.com/complete-android-n-developer-course/learn/v4/content">Rob Percival\'s Android Course</a>\n
+<a href="https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.sj94i1l3j">Paul Burke</a> - tutorial on using ItemTouchHelper for swiping\n\n
+
+<b>Libraries</b>\n\n
+<a href="https://github.com/daimajia/AndroidViewAnimations">AndroidViewAnimations</a> animation library\n
+<a href="https://github.com/AzeeSoft/AndroidPhotoshopColorPicker">AndroidPhotoshopColorPicker</a> color picker\n
+<a href="http://jakewharton.github.io/butterknife/">ButterKnife</a> binding library\n
+<a href="https://github.com/google/gson">Google GSON</a> JSON library\n
+<a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> utility library\n
+</string>
+    <string name="title_activity_login">Login</string>
+
+    <!-- Strings related to login -->
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="login">Login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="error_bad_login">Invalid login, please try again!</string>
+    <string name="title_activity_pre_def_login">Sign in</string>
+    <string name="error_bad_connection">Unable to connect to login server. Please try again</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_garage">My Garage</string>
+    <string name="nav_delete">Trashcan</string>
+    <string name="author_name">James Hollowell</string>
+    <string name="alert_undelete">Car restored from trashcan</string>
+</resources>
