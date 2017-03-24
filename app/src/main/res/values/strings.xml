@@ -56,7 +56,7 @@ This application also uses an external database and external web application to 
 <b>Acknowledgements</b>\n\n
 StackOverflow - Multiple small problems\n
 <a href="https://developer.android.com/guide/index.html">Android Developer Site</a> - Tutorials and API documentation\n
-<a href="https://unsplash.com/search/road?photo=EeEx8zpOESA">Unsplash</a> - the original background photo.\n
+<a href="https://unsplash.com/search/library?photo=sfL_QOnmy00">Unsplash</a> - the original background photo.\n
 <a href="https://www.udemy.com/complete-android-n-developer-course/learn/v4/content">Rob Percival\'s Android Course</a>\n
 <a href="https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.sj94i1l3j">Paul Burke</a> - tutorial on using ItemTouchHelper for swiping\n\n
 
