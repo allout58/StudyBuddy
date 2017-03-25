@@ -27,6 +27,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import edu.clemson.six.assignment4.OnStartDragListener;
 import edu.clemson.six.assignment4.R;
 import edu.clemson.six.assignment4.controller.CarController;
@@ -36,12 +41,6 @@ import edu.clemson.six.assignment4.controller.SyncController;
 import edu.clemson.six.assignment4.controller.sql.UnifiedDatabaseController;
 import edu.clemson.six.assignment4.view.helper.ItemTouchHelperAdapter;
 import edu.clemson.six.assignment4.view.helper.SwipeHelper;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class MainActivity extends AppCompatActivity implements ItemTouchHelperAdapter, NavigationView.OnNavigationItemSelectedListener {
 
@@ -249,10 +248,10 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
         switch (id) {
             case R.id.nav_friends:
-
+                startActivity(new Intent(this, FriendsActivity.class));
                 break;
             case R.id.nav_change_loc:
-
+                startActivity(new Intent(this, ChangeLocationActivity.class));
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

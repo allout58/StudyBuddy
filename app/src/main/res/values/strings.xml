@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyGarage</string>
+    <string name="app_name">StudyBuddy</string>
 
     <string name="text_main">Click an item to edit it or the button to add an item.</string>
     <string name="text_main_trash">Swipe an item to undelete it.</string>
@@ -32,12 +32,13 @@
 
     <!--Activity Titles-->
     <string name="title_activity_information">Information</string>
-    <string name="title_activity_edit">Edit Car</string>
-    <string name="title_activity_add">Add Car</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_friends">Friends</string>
+    <string name="title_activity_change_loc">Change Location</string>
+    <string name="title_activity_friend_add">Add Friend</string>
+    <string name="title_activity_friend_request">Friend Requests</string>
 
-    <string name="car_not_found">Error: Car Not Found</string>
-
-    <string name="acknowledgements"><b>MyGarage v1.0</b>\n
+    <string name="acknowledgements"><b>StudyBuddy v1.0</b>\n
 <b>Created By:</b>\n
 James Hollowell &lt;jthollo@clemson.edu&gt;\n
 Created for the Spring 2017 section of CPSC 4820\n\n
@@ -67,7 +68,6 @@ StackOverflow - Multiple small problems\n
 <a href="https://github.com/google/gson">Google GSON</a> JSON library\n
 <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> utility library\n
 </string>
-    <string name="title_activity_login">Login</string>
 
     <!-- Strings related to login -->
     <string name="error_invalid_email">This email address is invalid</string>
@@ -83,7 +83,7 @@ StackOverflow - Multiple small problems\n
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="author_name">James Hollowell</string>
+    <string name="author_name">James Hollowell and Connor Kinzie</string>
     <string name="alert_undelete">Car restored from trashcan</string>
     <string name="nav_friends">Friends</string>
     <string name="nav_change_loc">Change Location</string>
@@ -161,5 +161,4 @@ StackOverflow - Multiple small problems\n
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_friends">Friends</string>
 </resources>
