@@ -7,14 +7,15 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import edu.clemson.six.assignment4.controller.net.APIConnector;
-import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
-import edu.clemson.six.assignment4.controller.sql.UnifiedDatabaseController;
-import edu.clemson.six.assignment4.model.Car;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import edu.clemson.six.assignment4.controller.net.APIConnector;
+import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
+import edu.clemson.six.assignment4.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.assignment4.model.Car;
 
 /**
  * Created by James Hollowell on 3/3/2017.
@@ -26,11 +27,11 @@ public class SyncController {
     //  we should be fine unless we have no connection, in which chase we can just fall back to the local db and repair
     private static final SyncController instance = new SyncController();
 
-    public static SyncController getInstance() {
-        return instance;
+    private SyncController() {
     }
 
-    private SyncController() {
+    public static SyncController getInstance() {
+        return instance;
     }
 
     public void refresh(Runnable callback) {
@@ -41,7 +42,7 @@ public class SyncController {
     }
 
     public void beginSync() {
-        if (UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentUserID() != LoginSessionController.getInstance().getUserID()) {
+        if (UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentUserID() != LoginSessionController.getInstance(null).getUserID()) {
             // Do first time download
             Log.d("SyncController", "Initial synchronization for user");
             UnifiedDatabaseController.getInstance(null).getLocal().clearCars();
@@ -60,7 +61,7 @@ public class SyncController {
         @Override
         protected Boolean doInBackground(Void... params) {
             Map<String, String> args = new HashMap<>();
-            args.put("uid", String.valueOf(LoginSessionController.getInstance().getUserID()));
+            args.put("uid", String.valueOf(LoginSessionController.getInstance(null).getUserID()));
             ConnectionDetails details = APIConnector.setupConnection("sync.firsttime", args, ConnectionDetails.Method.GET);
             try {
                 JsonElement obj = APIConnector.connect(details);
@@ -74,7 +75,7 @@ public class SyncController {
                     UnifiedDatabaseController.getInstance(null).getLocal().syncCar(c);
                 }
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(LoginSessionController.getInstance().getUserID());
+                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(LoginSessionController.getInstance(null).getUserID());
                 return true;
             } catch (IOException e) {
                 Log.e("FirstSyncTask", "Error connecting to API to download initial database configuration", e);
@@ -99,10 +100,10 @@ public class SyncController {
         protected Boolean doInBackground(Void... params) {
             // Offset the most recent sync time for the remote server
             long sync = UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentSync();
-            sync += LoginSessionController.getInstance().getServerTimestampDiff();
+            sync += LoginSessionController.getInstance(null).getServerTimestampDiff();
 
             Map<String, String> args = new HashMap<>();
-            args.put("uid", String.valueOf(LoginSessionController.getInstance().getUserID()));
+            args.put("uid", String.valueOf(LoginSessionController.getInstance(null).getUserID()));
             args.put("last_upd", String.valueOf(sync));
             ConnectionDetails dets = APIConnector.setupConnection("sync.getnew", args, ConnectionDetails.Method.GET);
             try {
@@ -117,7 +118,7 @@ public class SyncController {
                     UnifiedDatabaseController.getInstance(null).getLocal().syncCar(c);
                 }
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(LoginSessionController.getInstance().getUserID());
+                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(LoginSessionController.getInstance(null).getUserID());
                 return true;
             } catch (IOException e) {
                 Log.e("NewSyncTask", "Error connecting to API to download synchronized data", e);

@@ -7,15 +7,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import edu.clemson.six.assignment4.controller.LoginSessionController;
-import edu.clemson.six.assignment4.controller.net.APIConnector;
-import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
-import edu.clemson.six.assignment4.model.Car;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.clemson.six.assignment4.controller.LoginSessionController;
+import edu.clemson.six.assignment4.controller.net.APIConnector;
+import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
+import edu.clemson.six.assignment4.model.Car;
 
 /**
  * Created by James Hollowell on 3/3/2017.
@@ -67,7 +68,7 @@ public class RemoteDatabaseController extends DatabaseController {
             JsonObject obj = gson.toJsonTree(params[0]).getAsJsonObject();
             obj.addProperty("colorHex", Integer.toHexString(params[0].getColor()));
             args.put("data", obj.toString());
-            args.put("userid", String.valueOf(LoginSessionController.getInstance().getUserID()));
+            args.put("userid", String.valueOf(LoginSessionController.getInstance(null).getUserID()));
             ConnectionDetails dets = APIConnector.setupConnection("car." + this.endpoint, args, ConnectionDetails.Method.POST);
             try {
                 return APIConnector.connect(dets);

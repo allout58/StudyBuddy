@@ -17,12 +17,6 @@ import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 
-import edu.clemson.six.assignment4.R;
-import edu.clemson.six.assignment4.controller.LoginSessionController;
-import edu.clemson.six.assignment4.controller.SyncController;
-import edu.clemson.six.assignment4.controller.net.APIConnector;
-import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +24,11 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import edu.clemson.six.assignment4.R;
+import edu.clemson.six.assignment4.controller.LoginSessionController;
+import edu.clemson.six.assignment4.controller.SyncController;
+import edu.clemson.six.assignment4.controller.net.APIConnector;
+import edu.clemson.six.assignment4.controller.net.ConnectionDetails;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -95,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         private final String username, password;
         private int userID = -1;
         private long serverTimestampDiff = 0;
+        private String token, realName;
 
         public LoginTask(String username, String password) {
             this.username = username;
@@ -111,9 +111,11 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
                 if (obj.has("userid")) {
-                    this.userID = obj.get("userid").getAsInt();
                     long timestamp = obj.get("currentTime").getAsLong();
                     this.serverTimestampDiff = timestamp - System.currentTimeMillis() / 1000;
+                    this.userID = obj.get("userid").getAsInt();
+                    this.token = obj.get("token").getAsString();
+                    this.realName = obj.get("name").getAsString();
                     return true;
                 } else {
                     return false;
@@ -142,9 +144,11 @@ public class LoginActivity extends AppCompatActivity {
                     Snackbar.make(loginCoordinator, R.string.error_bad_connection, Snackbar.LENGTH_LONG).show();
                 }
             } else {
-                LoginSessionController.getInstance().setUserID(this.userID);
-                LoginSessionController.getInstance().setUsername(this.username);
-                LoginSessionController.getInstance().setServerTimestampDiff(this.serverTimestampDiff);
+                LoginSessionController.getInstance(null).setUserID(this.userID);
+                LoginSessionController.getInstance(null).setUsername(this.username);
+                LoginSessionController.getInstance(null).setName(this.realName);
+                LoginSessionController.getInstance(null).setToken(this.token);
+                LoginSessionController.getInstance(null).setServerTimestampDiff(this.serverTimestampDiff);
                 SyncController.getInstance().beginSync();
                 Log.d("LoginActivity", "User ID: " + userID);
                 finish();
