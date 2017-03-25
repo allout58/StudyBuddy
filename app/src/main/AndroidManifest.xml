@@ -34,23 +34,27 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".view.MainActivity" />
         </activity>
-        <activity
-            android:name=".view.EditCarActivity"
-            android:label="@string/title_activity_edit"
-            android:parentActivityName=".view.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MainActivity" />
-        </activity>
-        <activity
-            android:name=".view.AddCarActivity"
-            android:label="@string/title_activity_add"
-            android:parentActivityName=".view.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MainActivity" />
-        </activity>
         <activity android:name=".view.LoginActivity" />
+        <activity
+            android:name=".view.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.clemson.six.assignment4.view.MainActivity" />
+        </activity>
+        <activity
+            android:name=".view.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:parentActivityName=".view.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.clemson.six.assignment4.view.MainActivity" />
+        </activity>
+        <activity android:name=".view.AddFriendActivity" />
+        <activity android:name=".view.FriendRequestsActivity" />
+        <activity android:name=".view.ChangeLocationActivity"></activity>
     </application>
 
 </manifest>

@@ -13,8 +13,8 @@ import edu.clemson.six.assignment4.OnStartDragListener;
 import edu.clemson.six.assignment4.R;
 import edu.clemson.six.assignment4.databinding.CarViewBinding;
 import edu.clemson.six.assignment4.model.Car;
-import edu.clemson.six.assignment4.view.EditCarActivity;
-import edu.clemson.six.assignment4.view.MainActivity;
+//import edu.clemson.six.assignment4.view.EditCarActivity;
+//import edu.clemson.six.assignment4.view.MainActivity;
 import edu.clemson.six.assignment4.view.helper.ItemTouchHelperAdapter;
 
 /**
@@ -55,10 +55,10 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
             @Override
             public void onClick(View view) {
                 if (!CarController.getInstance().isTrashExportMode()) {
-                    Intent intent = new Intent(holder.parent.getContext(), EditCarActivity.class);
-                    intent.putExtra(MainActivity.INTENT_CAR_ID, c.getId());
-                    intent.putExtra(MainActivity.INTENT_CAR_ORDER, holder.getAdapterPosition());
-                    holder.parent.getContext().startActivity(intent);
+//                    Intent intent = new Intent(holder.parent.getContext(), EditCarActivity.class);
+//                    intent.putExtra(MainActivity.INTENT_CAR_ID, c.getId());
+//                    intent.putExtra(MainActivity.INTENT_CAR_ORDER, holder.getAdapterPosition());
+//                    holder.parent.getContext().startActivity(intent);
                 }
             }
         });

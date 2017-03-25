@@ -98,13 +98,13 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         }
 
         // Setup the FAB
-        final Intent intent_addCar = new Intent(this, AddCarActivity.class);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(intent_addCar);
-            }
-        });
+//        final Intent intent_addCar = new Intent(this, AddCarActivity.class);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(intent_addCar);
+//            }
+//        });
 
         // Setup the Drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -248,17 +248,14 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
 
         switch (id) {
-            case R.id.nav_garage:
-                setTrashMode(false);
-                item.setChecked(true);
-                recyclerView.requestLayout();
-                CarListAdapter.getInstance().notifyDataSetChanged();
+            case R.id.nav_friends:
+
                 break;
-            case R.id.nav_delete:
-                setTrashMode(true);
-                item.setChecked(true);
-                recyclerView.requestLayout();
-                CarListAdapter.getInstance().notifyDataSetChanged();
+            case R.id.nav_change_loc:
+
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.action_info:
                 startActivity(new Intent(this, InformationActivity.class));
