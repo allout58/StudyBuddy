@@ -5,7 +5,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                                            tools:context="edu.clemson.six.assignment4.view.InformationActivity"
+                                            tools:context="edu.clemson.six.studybuddy.view.InformationActivity"
                                             tools:showIn="@layout/activity_information">
 
     <TextView

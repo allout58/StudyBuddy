@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="edu.clemson.six.assignment4">
+          package="edu.clemson.six.studybuddy">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".view.MainActivity"
+            android:name="edu.clemson.six.studybuddy.view.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,52 +26,52 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.InformationActivity"
+            android:name="edu.clemson.six.studybuddy.view.InformationActivity"
             android:label="@string/title_activity_information"
-            android:parentActivityName=".view.MainActivity"
+            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
         </activity>
-        <activity android:name=".view.LoginActivity"/>
+        <activity android:name="edu.clemson.six.studybuddy.view.LoginActivity"/>
         <activity
-            android:name=".view.SettingsActivity"
+            android:name="edu.clemson.six.studybuddy.view.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".view.MainActivity">
+            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.assignment4.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
         </activity>
         <activity
-            android:name=".view.FriendsActivity"
+            android:name="edu.clemson.six.studybuddy.view.FriendsActivity"
             android:label="@string/title_activity_friends"
-            android:parentActivityName=".view.MainActivity"
+            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.assignment4.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
         </activity>
         <activity
-            android:name=".view.AddFriendActivity"
+            android:name="edu.clemson.six.studybuddy.view.AddFriendActivity"
             android:label="@string/title_activity_friend_add">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.assignment4.view.FriendsActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.FriendsActivity"/>
         </activity>
         <activity
-            android:name=".view.FriendRequestsActivity"
+            android:name="edu.clemson.six.studybuddy.view.FriendRequestsActivity"
             android:label="@string/title_activity_friend_request">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.assignment4.view.FriendsActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.FriendsActivity"/>
         </activity>
         <activity
-            android:name=".view.ChangeLocationActivity"
+            android:name="edu.clemson.six.studybuddy.view.ChangeLocationActivity"
             android:label="@string/title_activity_change_loc">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.assignment4.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
         </activity>
     </application>
 

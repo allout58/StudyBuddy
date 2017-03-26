@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_coordinator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/library_bg"
-    tools:context="edu.clemson.six.assignment4.view.LoginActivity">
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:id="@+id/login_coordinator"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@drawable/library_bg"
+                                                 tools:context="edu.clemson.six.studybuddy.view.LoginActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
