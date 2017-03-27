@@ -163,4 +163,5 @@ StackOverflow - Multiple small problems\n
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="text_token_login">Logging in...</string>
+    <string name="logged_in">Logged In</string>
 </resources>

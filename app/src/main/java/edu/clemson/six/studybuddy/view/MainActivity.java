@@ -53,7 +53,6 @@ import edu.clemson.six.studybuddy.OnStartDragListener;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.CarController;
 import edu.clemson.six.studybuddy.controller.CarListAdapter;
-import edu.clemson.six.studybuddy.controller.LoginSessionController;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         View v = navView.getHeaderView(0);
         textViewUser = (TextView) v.findViewById(R.id.textViewUser);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Snackbar.make(mainCoordinator, "Already logged in", Snackbar.LENGTH_LONG).show();
             auth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -124,31 +123,15 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
                     if (task.isSuccessful()) {
                         VerifyTask verifyTask = new VerifyTask();
                         verifyTask.execute(task.getResult().getToken());
+//                        auth.getCurrentUser()
                     } else {
                         task.getException().printStackTrace();
                     }
                 }
             });
         } else {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                    .setLogo(R.mipmap.ic_launcher)
-                    .setTheme(R.style.AppTheme)
-                    .setProviders(Arrays.asList(
-                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
-                    ))
-                    .build(), Constants.RC_SIGN_IN);
+            launchFirebaseAuthUI();
         }
-
-//        LoginSessionController.getInstance(this);
-//        if (!LoginSessionController.getInstance(this).getUsername().isEmpty() && !LoginSessionController.getInstance(this).getToken().isEmpty()) {
-//            TokenLoginTask task = new TokenLoginTask();
-//            task.execute((Void[]) null);
-//        } else if (LoginSessionController.getInstance(this).getUserID() == -1) {
-//            Intent intent_login = new Intent(this, LoginActivity.class);
-//            startActivity(intent_login);
-//            textViewUser.setText(LoginSessionController.getInstance(this).getName());
-//        }
 
 
         // Setup the Drawer
@@ -304,8 +287,6 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
                 break;
             case R.id.action_logout:
                 AuthUI.getInstance().signOut(this);
-//                LoginSessionController.getInstance(this).setUserID(-1);
-//                startActivity(new Intent(this, LoginActivity.class));
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -320,14 +301,24 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         contentMain.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
+    private void launchFirebaseAuthUI() {
+        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+                .setLogo(R.mipmap.ic_launcher)
+                .setTheme(R.style.AppTheme)
+                .setProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+                ))
+                .build(), Constants.RC_SIGN_IN);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == ResultCodes.OK && response != null) {
-                Snackbar.make(mainCoordinator, String.format("Email: %s, Token: %s", response.getEmail(), response.getIdpToken()), Snackbar.LENGTH_LONG).show();
-                Log.d("FirebaseLogin", String.format("Email: %s, Token: %s", response.getEmail(), response.getIdpToken()));
+                Snackbar.make(mainCoordinator, R.string.logged_in, Snackbar.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
@@ -356,69 +347,6 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
             // Unknown signin response
         }
     }
-
-    private class TokenLoginTask extends AsyncTask<Void, Void, Boolean> {
-        private int userID = -1;
-        private long serverTimestampDiff = 0;
-        private String realName;
-
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            Log.d("TokenLoginTask", "Begin Background");
-            Map<String, String> args = new HashMap<>();
-            args.put("user", LoginSessionController.getInstance(MainActivity.this).getUsername());
-            args.put("token", LoginSessionController.getInstance(MainActivity.this).getToken());
-            ConnectionDetails con = APIConnector.setupConnection("user.login", args, ConnectionDetails.Method.POST);
-            try {
-                JsonObject obj = APIConnector.connect(con).getAsJsonObject();
-                if (obj.has("userid")) {
-                    long timestamp = obj.get("currentTime").getAsLong();
-                    this.serverTimestampDiff = timestamp - System.currentTimeMillis() / 1000;
-                    this.userID = obj.get("userid").getAsInt();
-                    this.realName = obj.get("name").getAsString();
-                    return true;
-                } else {
-                    Log.d("TokenLoginTask", "Failed to login with token");
-                    return false;
-                }
-
-            } catch (IOException e) {
-                // TODO Fallback to local login?
-                Log.e("TokenLoginTask", "Error connecting to external API", e);
-                userID = -2;
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            showLoginProgress(true);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            showLoginProgress(false);
-            if (!result) {
-                if (userID == -1) {
-                    Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent_login);
-                } else {
-                    Snackbar.make(mainCoordinator, R.string.error_bad_connection, Snackbar.LENGTH_LONG).show();
-                }
-            } else {
-                LoginSessionController.getInstance(MainActivity.this).setUserID(this.userID);
-                LoginSessionController.getInstance(MainActivity.this).setServerTimestampDiff(this.serverTimestampDiff);
-                LoginSessionController.getInstance(MainActivity.this).setName(this.realName);
-//                SyncController.getInstance().beginSync();
-                textViewUser.setText(this.realName);
-                Log.d("MainActivity-Login", "User ID: " + userID);
-            }
-            super.onPostExecute(result);
-        }
-    }
-
     public class VerifyTask extends AsyncTask<String, Void, Void> {
 
         @Override

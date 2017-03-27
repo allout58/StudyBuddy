@@ -34,7 +34,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
         </activity>
-        <activity android:name="edu.clemson.six.studybuddy.view.LoginActivity"/>
         <activity
             android:name="edu.clemson.six.studybuddy.view.SettingsActivity"
             android:label="@string/title_activity_settings"
