@@ -29,9 +29,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -39,6 +48,7 @@ import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.OnStartDragListener;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.CarController;
@@ -93,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
     TextView textViewUser;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,17 +115,40 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         View v = navView.getHeaderView(0);
         textViewUser = (TextView) v.findViewById(R.id.textViewUser);
 
-
-
-        LoginSessionController.getInstance(this);
-        if (!LoginSessionController.getInstance(this).getUsername().isEmpty() && !LoginSessionController.getInstance(this).getToken().isEmpty()) {
-            TokenLoginTask task = new TokenLoginTask();
-            task.execute((Void[]) null);
-        } else if (LoginSessionController.getInstance(this).getUserID() == -1) {
-            Intent intent_login = new Intent(this, LoginActivity.class);
-            startActivity(intent_login);
-            textViewUser.setText(LoginSessionController.getInstance(this).getName());
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            Snackbar.make(mainCoordinator, "Already logged in", Snackbar.LENGTH_LONG).show();
+            auth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                @Override
+                public void onComplete(@NonNull Task<GetTokenResult> task) {
+                    if (task.isSuccessful()) {
+                        VerifyTask verifyTask = new VerifyTask();
+                        verifyTask.execute(task.getResult().getToken());
+                    } else {
+                        task.getException().printStackTrace();
+                    }
+                }
+            });
+        } else {
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+                    .setLogo(R.mipmap.ic_launcher)
+                    .setTheme(R.style.AppTheme)
+                    .setProviders(Arrays.asList(
+                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+                    ))
+                    .build(), Constants.RC_SIGN_IN);
         }
+
+//        LoginSessionController.getInstance(this);
+//        if (!LoginSessionController.getInstance(this).getUsername().isEmpty() && !LoginSessionController.getInstance(this).getToken().isEmpty()) {
+//            TokenLoginTask task = new TokenLoginTask();
+//            task.execute((Void[]) null);
+//        } else if (LoginSessionController.getInstance(this).getUserID() == -1) {
+//            Intent intent_login = new Intent(this, LoginActivity.class);
+//            startActivity(intent_login);
+//            textViewUser.setText(LoginSessionController.getInstance(this).getName());
+//        }
 
 
         // Setup the Drawer
@@ -175,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
 
         // Initialize the database connection
-        UnifiedDatabaseController.getInstance(this);
+//        UnifiedDatabaseController.getInstance(this);
 
         // Initialize the database storage saver
         new Timer("DBUpdateDirty").schedule(new TimerTask() {
@@ -187,12 +221,12 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
         // Load the database
         //TODO: Turn this into an async task
-        new Timer("DBInitLoad").schedule(new TimerTask() {
-            @Override
-            public void run() {
-                CarController.getInstance().reload();
-            }
-        }, 0);
+//        new Timer("DBInitLoad").schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                CarController.getInstance().reload();
+//            }
+//        }, 0);
     }
 
 
@@ -269,8 +303,9 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
                 startActivity(new Intent(this, InformationActivity.class));
                 break;
             case R.id.action_logout:
-                LoginSessionController.getInstance(this).setUserID(-1);
-                startActivity(new Intent(this, LoginActivity.class));
+                AuthUI.getInstance().signOut(this);
+//                LoginSessionController.getInstance(this).setUserID(-1);
+//                startActivity(new Intent(this, LoginActivity.class));
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -283,6 +318,43 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
     private void showLoginProgress(boolean show) {
         contentLogin.setVisibility(show ? View.VISIBLE : View.GONE);
         contentMain.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (resultCode == ResultCodes.OK && response != null) {
+                Snackbar.make(mainCoordinator, String.format("Email: %s, Token: %s", response.getEmail(), response.getIdpToken()), Snackbar.LENGTH_LONG).show();
+                Log.d("FirebaseLogin", String.format("Email: %s, Token: %s", response.getEmail(), response.getIdpToken()));
+                FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if (task.isSuccessful()) {
+                            VerifyTask verifyTask = new VerifyTask();
+                            verifyTask.execute(task.getResult().getToken());
+                        } else {
+                            task.getException().printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                if (response == null) {
+                    // Signin canceled
+                    return;
+                }
+                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    // No network connection
+                    return;
+                }
+                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                    // Unknown error
+                    return;
+                }
+            }
+            // Unknown signin response
+        }
     }
 
     private class TokenLoginTask extends AsyncTask<Void, Void, Boolean> {
@@ -344,6 +416,23 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
                 Log.d("MainActivity-Login", "User ID: " + userID);
             }
             super.onPostExecute(result);
+        }
+    }
+
+    public class VerifyTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Map<String, String> args = new HashMap<>();
+            args.put("jwt", params[0]);
+            ConnectionDetails con = APIConnector.setupConnection("user.firebase_login", args, ConnectionDetails.Method.POST);
+            try {
+                JsonObject obj = APIConnector.connect(con).getAsJsonObject();
+                Log.d("VerifyTask", obj.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }

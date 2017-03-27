@@ -22,6 +22,7 @@ allprojects {
 //	gradleLint.rules += 'unused-dependency'
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 

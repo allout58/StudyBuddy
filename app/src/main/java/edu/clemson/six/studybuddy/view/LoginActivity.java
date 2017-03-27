@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         // Ignore default action
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

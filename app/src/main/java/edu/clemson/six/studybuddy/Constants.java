@@ -17,7 +17,10 @@ public final class Constants {
      * Number of retries when connecting to the remote API
      */
     public static final int API_RETRIES = 3;
+
     public static final String PREFS_LOGIN = "prefs.login";
+
+    public static final int RC_SIGN_IN = 4242;
 
     private Constants() {
 
