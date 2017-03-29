@@ -62,6 +62,7 @@ StackOverflow - Multiple small problems\n
 <a href="https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.sj94i1l3j">Paul Burke</a> - tutorial on using ItemTouchHelper for swiping\n\n
 
 <b>Libraries</b>\n\n
+<a href="https://github.com/afollestad/sectioned-recyclerview">Sectioned RecyclerView</a>\n
 <a href="https://github.com/daimajia/AndroidViewAnimations">AndroidViewAnimations</a> animation library\n
 <a href="https://github.com/AzeeSoft/AndroidPhotoshopColorPicker">AndroidPhotoshopColorPicker</a> color picker\n
 <a href="http://jakewharton.github.io/butterknife/">ButterKnife</a> binding library\n
@@ -162,6 +163,10 @@ StackOverflow - Multiple small problems\n
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
-    <string name="text_token_login">Logging in...</string>
+    <string name="text_token_login">Logging in…</string>
     <string name="logged_in">Logged In</string>
+    <string name="endTime">Leaving at\n</string>
+    <string name="section_request"><u>Requested</u></string>
+    <string name="section_other"><u>Friends</u></string>
+    <string name="section_near"><u>Nearby Friends</u></string>
 </resources>

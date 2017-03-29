@@ -13,7 +13,7 @@ import edu.clemson.six.studybuddy.controller.CarListAdapter;
  */
 
 public class SwipeHelper extends ItemTouchHelper.Callback {
-    // Super janky event queue
+    // Super jank event queue
     private List<ItemTouchHelperAdapter> adapterList = new ArrayList<>();
 
     public SwipeHelper() {
@@ -31,7 +31,7 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
             if (viewHolder instanceof CarListAdapter.CarViewHolder) {
                 CarListAdapter.CarViewHolder vh = (CarListAdapter.CarViewHolder) viewHolder;
-                vh.binding.getRoot().animate().alpha(0.75f).setDuration(500);
+//                vh.binding.getRoot().animate().alpha(0.75f).setDuration(500);
             }
         }
     }
@@ -40,7 +40,7 @@ public class SwipeHelper extends ItemTouchHelper.Callback {
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof CarListAdapter.CarViewHolder) {
             CarListAdapter.CarViewHolder vh = (CarListAdapter.CarViewHolder) viewHolder;
-            vh.binding.getRoot().animate().alpha(1).setDuration(500);
+//            vh.binding.getRoot().animate().alpha(1).setDuration(500);
         }
     }
 

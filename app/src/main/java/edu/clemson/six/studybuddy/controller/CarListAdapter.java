@@ -1,21 +1,14 @@
 package edu.clemson.six.studybuddy.controller;
 
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import edu.clemson.six.studybuddy.OnStartDragListener;
-import edu.clemson.six.studybuddy.R;
-import edu.clemson.six.studybuddy.databinding.CarViewBinding;
 import edu.clemson.six.studybuddy.model.Car;
 import edu.clemson.six.studybuddy.view.helper.ItemTouchHelperAdapter;
 
-//import edu.clemson.six.assignment4.view.EditCarActivity;
-//import edu.clemson.six.assignment4.view.MainActivity;
 
 /**
  * Created by jthollo on 2/5/2017.
@@ -40,39 +33,40 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
 
     @Override
     public CarViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CarViewBinding binding = CarViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+//        CarViewBinding binding = CarViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         Log.d("CarListAdapter", "Creating new viewholder vt:" + viewType + " parent: " + parent);
-        return new CarViewHolder(binding, parent);
+//        return new CarViewHolder(binding, parent);
+        return null;
     }
 
     @Override
     public void onBindViewHolder(final CarViewHolder holder, int position) {
         final Car c = CarController.getInstance().get(position);
         Log.d("CarListAdapter", "Size: " + CarController.getInstance().size() + ", pos: " + position + ", name: " + c.getMake() + c.getModel() + ", isDeleted: " + String.valueOf(c.isDeleted()));
-        holder.binding.setCar(c);
-        holder.binding.executePendingBindings();
-        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!CarController.getInstance().isTrashExportMode()) {
+//        holder.binding.setCar(c);
+//        holder.binding.executePendingBindings();
+//        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!CarController.getInstance().isTrashExportMode()) {
 //                    Intent intent = new Intent(holder.parent.getContext(), EditCarActivity.class);
 //                    intent.putExtra(MainActivity.INTENT_CAR_ID, c.getId());
 //                    intent.putExtra(MainActivity.INTENT_CAR_ORDER, holder.getAdapterPosition());
 //                    holder.parent.getContext().startActivity(intent);
-                }
-            }
-        });
-        holder.binding.getRoot().findViewById(R.id.viewHandle).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    if (dragListener != null) {
-                        dragListener.onStartDrag(holder);
-                    }
-                }
-                return false;
-            }
-        });
+//                }
+//            }
+//        });
+//        holder.binding.getRoot().findViewById(R.id.viewHandle).setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                    if (dragListener != null) {
+//                        dragListener.onStartDrag(holder);
+//                    }
+//                }
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -84,8 +78,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
     public void onItemDismiss(int position) {
         if (CarController.getInstance().isTrashExportMode()) {
             CarController.getInstance().unDelete(CarController.getInstance().get(position));
-        }
-        else {
+        } else {
             CarController.getInstance().remove(position);
         }
 //        notifyDataSetChanged();
@@ -109,13 +102,17 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
     }
 
     public static class CarViewHolder extends RecyclerView.ViewHolder {
-        public CarViewBinding binding;
+        //        public CarViewBinding binding;
         public ViewGroup parent;
 
-        public CarViewHolder(CarViewBinding binding, ViewGroup parent) {
-            super(binding.getRoot());
-            this.binding = binding;
-            this.parent = parent;
+        public CarViewHolder(View itemView) {
+            super(itemView);
         }
+
+//        public CarViewHolder(CarViewBinding binding, ViewGroup parent) {
+//            super(binding.getRoot());
+//            this.binding = binding;
+//            this.parent = parent;
+//        }
     }
 }

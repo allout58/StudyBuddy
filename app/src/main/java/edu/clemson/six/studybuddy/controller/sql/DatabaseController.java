@@ -25,9 +25,6 @@ public abstract class DatabaseController {
         return cv;
     }
 
-//    protected ContentValues contentValuesFromUser(User user) {
-//
-//    }
 
     public abstract List<Car> getCars();
 

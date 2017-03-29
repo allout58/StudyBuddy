@@ -45,7 +45,7 @@ public class LocalDatabaseController extends DatabaseController {
             int lastUpdate = cursor.getInt(cursor.getColumnIndex(CarsContract.CarEntry.COLUMN_NAME_LAST_UPDATE));
 
             Log.i("CarController", "Loaded new car from DB with id " + id);
-            cars.add(new Car(null, make, model, license, state, color, year, id, sortOrder, lastUpdate, isDeleted));
+            cars.add(new Car(make, model, license, state, color, year, id, sortOrder, lastUpdate, isDeleted));
         }
 
         cursor.close();

@@ -1,7 +1,5 @@
 package edu.clemson.six.studybuddy.controller.sql;
 
-import android.provider.BaseColumns;
-
 /**
  * Created by jthollo on 3/27/2017.
  */
@@ -30,7 +28,7 @@ public class DBContract {
         public static final String[] COLUMNS_ALL = {COLUMN_ID, COLUMN_NAME, COLUMN_LOCATION};
     }
 
-    public static class FriendsContract implements BaseColumns {
+    public static class FriendsContract {
         public static final String TABLE_NAME = "Friends";
         public static final String COLUMN_UID = "firebase_uid";
         public static final String COLUMN_NAME = "name";
@@ -38,8 +36,8 @@ public class DBContract {
         public static final String COLUMN_SUBLOCATION = SubLocationsContract.COLUMN_ID;
         public static final String COLUMN_BLURB = "blurb";
         public static final String COLUMN_END_TIME = "endTime";
-        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_CONFIRMED = "confirmed";
 
-        public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_SUBLOCATION, COLUMN_BLURB, COLUMN_END_TIME, COLUMN_STATUS};
+        public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_SUBLOCATION, COLUMN_BLURB, COLUMN_END_TIME, COLUMN_CONFIRMED};
     }
 }

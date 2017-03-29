@@ -56,7 +56,6 @@ import edu.clemson.six.studybuddy.controller.CarListAdapter;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
-import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
 import edu.clemson.six.studybuddy.view.helper.ItemTouchHelperAdapter;
 import edu.clemson.six.studybuddy.view.helper.SwipeHelper;
 
@@ -224,11 +223,11 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
 
     @Override
     protected void onDestroy() {
-        if (!CarController.getInstance().isTrashExportMode()) {
-            CarController.getInstance().commitDeletes();
-        }
-        CarController.getInstance().commitDirty();
-        UnifiedDatabaseController.getInstance(null).close();
+//        if (!CarController.getInstance().isTrashExportMode()) {
+//            CarController.getInstance().commitDeletes();
+//        }
+//        CarController.getInstance().commitDirty();
+//        UnifiedDatabaseController.getInstance(null).close();
         super.onDestroy();
     }
 

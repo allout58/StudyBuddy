@@ -7,7 +7,6 @@ package edu.clemson.six.studybuddy.model;
  */
 
 public class Car implements Comparable {
-    private User user;
     private String make, model, license, state;
     private int color;
     private int year;
@@ -17,8 +16,7 @@ public class Car implements Comparable {
     private boolean isDeleted = false;
     private boolean isNew = false;
 
-    public Car(User user, String make, String model, String license, String state, int color, int year, int id, int sortOrder) {
-        this.user = user;
+    public Car(String make, String model, String license, String state, int color, int year, int id, int sortOrder) {
         this.make = make;
         this.model = model;
         this.license = license;
@@ -29,8 +27,7 @@ public class Car implements Comparable {
         this.sortOrder = sortOrder;
     }
 
-    public Car(User user, String make, String model, String license, String state, int color, int year, int id, int sortOrder, long lastUpdate, boolean isDeleted) {
-        this.user = user;
+    public Car(String make, String model, String license, String state, int color, int year, int id, int sortOrder, long lastUpdate, boolean isDeleted) {
         this.make = make;
         this.model = model;
         this.license = license;
@@ -45,14 +42,6 @@ public class Car implements Comparable {
 
     public Car() {
         isNew = true;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getMake() {
