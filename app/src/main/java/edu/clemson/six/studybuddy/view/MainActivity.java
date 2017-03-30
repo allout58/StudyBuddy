@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,8 +35,10 @@ import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -51,6 +54,7 @@ import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
+import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout contentLogin;
 
     TextView textViewUser;
+    ImageView imageViewUser;
 
 
     @Override
@@ -106,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         View v = navView.getHeaderView(0);
         textViewUser = (TextView) v.findViewById(R.id.textViewUser);
+        imageViewUser = (ImageView) v.findViewById(R.id.imageViewUser);
 
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
@@ -306,20 +312,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public class VerifyTask extends AsyncTask<String, Void, Void> {
+    public class VerifyTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
+            args.put("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
             ConnectionDetails con = APIConnector.setupConnection("user.firebase_login", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
                 Log.d("VerifyTask", obj.toString());
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
-            return null;
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+                Log.d("VerifyTask", String.format("Name: %s, Image: %s", u.getDisplayName(), u.getPhotoUrl().toString()));
+                textViewUser.setText(u.getDisplayName());
+                Picasso.with(MainActivity.this)
+                        .load(u.getPhotoUrl())
+                        .resize(150, 150)
+                        .transform(new CircleTransform())
+                        .placeholder(R.drawable.ic_person_white_24dp)
+                        .into(imageViewUser);
+            }
         }
     }
 }

@@ -68,6 +68,7 @@ StackOverflow - Multiple small problems\n
 <a href="http://jakewharton.github.io/butterknife/">ButterKnife</a> binding library\n
 <a href="https://github.com/google/gson">Google GSON</a> JSON library\n
 <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> utility library\n
+<a href="http://square.github.io/picasso/">Picasso</a> image utility library\n
 </string>
 
     <!-- Strings related to login -->
