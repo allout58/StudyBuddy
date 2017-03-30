@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.action_logout:
                 AuthUI.getInstance().signOut(this);
+                launchFirebaseAuthUI();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -271,7 +272,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setTheme(R.style.AppTheme)
                 .setProviders(Arrays.asList(
                         new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
                 ))
                 .build(), Constants.RC_SIGN_IN);
     }
