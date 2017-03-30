@@ -3,15 +3,14 @@ package edu.clemson.six.studybuddy.controller.sql;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import edu.clemson.six.studybuddy.model.Car;
+import edu.clemson.six.studybuddy.model.Friend;
+import edu.clemson.six.studybuddy.model.Location;
+import edu.clemson.six.studybuddy.model.SubLocation;
 
 /**
  * Created by James Hollowell on 3/3/2017.
@@ -19,62 +18,60 @@ import edu.clemson.six.studybuddy.model.Car;
 
 public class LocalDatabaseController extends DatabaseController {
 
-    final CarsDbHelper dbHelper;
+    final DbHelper dbHelper;
 
     public LocalDatabaseController(Context context) {
-        this.dbHelper = new CarsDbHelper(context);
+        this.dbHelper = new DbHelper(context);
     }
 
     @Override
-    public List<Car> getCars() {
-        List<Car> cars = new ArrayList<>();
+    public List<Location> getLocations() {
+        List<Location> l = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.query(CarsContract.CarEntry.TABLE_NAME, CarsContract.CarEntry.COLUMNS_ALL, null, null, null, null, CarsContract.CarEntry.COLUMN_NAME_SORT_ORDER);
-
-        while (cursor.moveToNext()) {
-            String make = cursor.getString(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_MAKE));
-            String model = cursor.getString(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_MODEL));
-            String license = cursor.getString(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_LICENSE));
-            String state = cursor.getString(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_STATE));
-            int color = cursor.getInt(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_COLOR));
-            int year = cursor.getInt(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_YEAR));
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow(CarsContract.CarEntry._ID));
-            int sortOrder = cursor.getInt(cursor.getColumnIndexOrThrow(CarsContract.CarEntry.COLUMN_NAME_SORT_ORDER));
-            boolean isDeleted = cursor.getInt(cursor.getColumnIndex(CarsContract.CarEntry.COLUMN_NAME_IS_DELETED)) == 1;
-            int lastUpdate = cursor.getInt(cursor.getColumnIndex(CarsContract.CarEntry.COLUMN_NAME_LAST_UPDATE));
-
-            Log.i("CarController", "Loaded new car from DB with id " + id);
-            cars.add(new Car(make, model, license, state, color, year, id, sortOrder, lastUpdate, isDeleted));
+        Cursor c = db.query(DBContract.LocationsContract.TABLE_NAME, DBContract.LocationsContract.COLUMNS_ALL, "", null, null, null, null);
+        while (c.moveToNext()) {
+            Location loc = new Location(c.getInt(c.getColumnIndex(DBContract.LocationsContract.COLUMN_ID)),
+                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LONG)),
+                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LAT)),
+                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_RADIUS)),
+                    c.getString(c.getColumnIndex(DBContract.LocationsContract.COLUMN_NAME)));
+            addSubLocationsForLocation(loc);
+            l.add(loc);
         }
+        c.close();
+        return l;
+    }
 
-        cursor.close();
-        return Collections.unmodifiableList(cars);
+    private void addSubLocationsForLocation(Location location) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.query(DBContract.SubLocationsContract.TABLE_NAME, DBContract.SubLocationsContract.COLUMNS_ALL, DBContract.SubLocationsContract.COLUMN_LOCATION + " = ?", new String[]{String.valueOf(location.getId())}, null, null, null);
+        while (c.moveToNext()) {
+            SubLocation l = new SubLocation(c.getInt(c.getColumnIndex(DBContract.SubLocationsContract.COLUMN_ID)),
+                    c.getString(c.getColumnIndex(DBContract.SubLocationsContract.COLUMN_NAME)),
+                    location);
+            location.addSubLocation(l);
+        }
+        c.close();
     }
 
     @Override
-    public long addCar(Car car) {
-        ContentValues cv = this.contentValuesFromCar(car);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        return db.insertOrThrow(CarsContract.CarEntry.TABLE_NAME, null, cv);
+    public List<Friend> getFriends() {
+        return null;
     }
 
     @Override
-    public void updateCar(Car car) {
-        ContentValues cv = this.contentValuesFromCar(car);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String selection = CarsContract.CarEntry._ID + " = ?";
-        String[] args = {String.valueOf(car.getId())};
-        db.update(CarsContract.CarEntry.TABLE_NAME, cv, selection, args);
+    public List<Friend> getUsersLike(String name) {
+        return null;
     }
 
     @Override
-    public void deleteCar(Car car) {
-        ContentValues cv = this.contentValuesFromCar(car);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String selection = CarsContract.CarEntry._ID + " = ?";
-        String[] args = {String.valueOf(car.getId())};
-        db.update(CarsContract.CarEntry.TABLE_NAME, cv, selection, args);
+    public void requestFriend(String uid) {
+
+    }
+
+    @Override
+    public void acceptRquest(String uid) {
+
     }
 
     @Override
@@ -82,36 +79,36 @@ public class LocalDatabaseController extends DatabaseController {
         dbHelper.close();
     }
 
-    public int getMostRecentUserID() {
+    public String getMostRecentUserID() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(CarsContract.UpdateInfoEntry.TABLE_NAME, new String[]{CarsContract.UpdateInfoEntry.COLUMN_USER_ID}, null, null, null, null, null);
+        Cursor cursor = db.query(DBContract.UpdateInfoEntry.TABLE_NAME, new String[]{DBContract.UpdateInfoEntry.COLUMN_USER_ID}, null, null, null, null, null);
         try {
             if (cursor.moveToFirst()) {
-                return cursor.getInt(cursor.getColumnIndex(CarsContract.UpdateInfoEntry.COLUMN_USER_ID));
+                return cursor.getString(cursor.getColumnIndex(DBContract.UpdateInfoEntry.COLUMN_USER_ID));
             } else {
-                return -1;
+                return "";
             }
         } finally {
             cursor.close();
         }
     }
 
-    public void setMostRecentUserID(int userID) {
+    public void setMostRecentUserID(String userID) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(CarsContract.UpdateInfoEntry.COLUMN_USER_ID, String.valueOf(userID));
-        String selection = CarsContract.UpdateInfoEntry._ID + " = ?";
+        cv.put(DBContract.UpdateInfoEntry.COLUMN_USER_ID, userID);
+        String selection = DBContract.UpdateInfoEntry._ID + " = ?";
         String[] args = {"1"};
-        db.update(CarsContract.UpdateInfoEntry.TABLE_NAME, cv, selection, args);
+        db.update(DBContract.UpdateInfoEntry.TABLE_NAME, cv, selection, args);
     }
 
     public long getMostRecentSync() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(CarsContract.UpdateInfoEntry.TABLE_NAME, new String[]{CarsContract.UpdateInfoEntry.COLUMN_LAST_TIME}, null, null, null, null, null);
+        Cursor cursor = db.query(DBContract.UpdateInfoEntry.TABLE_NAME, new String[]{DBContract.UpdateInfoEntry.COLUMN_LAST_TIME}, null, null, null, null, null);
         try {
             if (cursor.moveToFirst()) {
-                return cursor.getLong(cursor.getColumnIndex(CarsContract.UpdateInfoEntry.COLUMN_LAST_TIME));
+                return cursor.getLong(cursor.getColumnIndex(DBContract.UpdateInfoEntry.COLUMN_LAST_TIME));
             } else {
                 return -1;
             }
@@ -123,31 +120,10 @@ public class LocalDatabaseController extends DatabaseController {
     public void setMostRecentSync(long sync) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(CarsContract.UpdateInfoEntry.COLUMN_LAST_TIME, String.valueOf(sync));
-        String selection = CarsContract.UpdateInfoEntry._ID + " = ?";
+        cv.put(DBContract.UpdateInfoEntry.COLUMN_LAST_TIME, String.valueOf(sync));
+        String selection = DBContract.UpdateInfoEntry._ID + " = ?";
         String[] args = {"1"};
-        db.update(CarsContract.UpdateInfoEntry.TABLE_NAME, cv, selection, args);
-    }
-
-    /**
-     * Synchronize a car to this database, adding it or updating it as appropriate
-     * @param car Car to be synchronized
-     */
-    public void syncCar(Car car) {
-        ContentValues cv = this.contentValuesFromCar(car);
-        cv.put(CarsContract.CarEntry._ID, car.getId());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            db.insertOrThrow(CarsContract.CarEntry.TABLE_NAME, null, cv);
-        }
-        catch (SQLException e) {
-            updateCar(car);
-        }
-    }
-
-    public void clearCars() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(CarsContract.CarEntry.TABLE_NAME, "", null);
+        db.update(DBContract.UpdateInfoEntry.TABLE_NAME, cv, selection, args);
     }
 
 }

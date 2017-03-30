@@ -4,7 +4,8 @@ import android.content.Context;
 
 import java.util.List;
 
-import edu.clemson.six.studybuddy.model.Car;
+import edu.clemson.six.studybuddy.model.Friend;
+import edu.clemson.six.studybuddy.model.Location;
 
 /**
  * Created by jthollo on 3/8/2017.
@@ -28,27 +29,29 @@ public class UnifiedDatabaseController extends DatabaseController {
     }
 
     @Override
-    public List<Car> getCars() {
-        return this.local.getCars();
+    public List<Location> getLocations() {
+        return local.getLocations();
+    }
+
+
+    @Override
+    public List<Friend> getFriends() {
+        return null;
     }
 
     @Override
-    public long addCar(Car car) {
-        long localID = local.addCar(car);
-        long remoteID = remote.addCar(car);
-        return localID;
+    public List<Friend> getUsersLike(String name) {
+        return null;
     }
 
     @Override
-    public void updateCar(Car car) {
-        local.updateCar(car);
-        remote.updateCar(car);
+    public void requestFriend(String uid) {
+
     }
 
     @Override
-    public void deleteCar(Car car) {
-        local.deleteCar(car);
-        remote.deleteCar(car);
+    public void acceptRquest(String uid) {
+
     }
 
     @Override

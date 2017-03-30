@@ -8,16 +8,21 @@ import java.util.List;
  */
 
 public class Location {
-    public static final Location OTHER = new Location(-1, "Other");
+    public static final Location OTHER = new Location(-1, 0, 0, 0, "Other");
 
     private final int id;
+    private final double longitude, latitude;
+    private final double radius;
     private final String name;
     private final List<SubLocation> sublocations;
 
-    public Location(int id, String name) {
+    public Location(int id, double longitude, double latitude, double radius, String name) {
         this.id = id;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.radius = radius;
         this.name = name;
-        sublocations = new ArrayList<>();
+        this.sublocations = new ArrayList<>();
     }
 
     public int getId() {
@@ -28,9 +33,25 @@ public class Location {
         return name;
     }
 
-    private SubLocation[] getSublocations() {
+    public SubLocation[] getSublocations() {
         SubLocation[] ret = new SubLocation[sublocations.size()];
         sublocations.toArray(ret);
         return ret;
+    }
+
+    public void addSubLocation(SubLocation l) {
+        sublocations.add(l);
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getRadius() {
+        return radius;
     }
 }

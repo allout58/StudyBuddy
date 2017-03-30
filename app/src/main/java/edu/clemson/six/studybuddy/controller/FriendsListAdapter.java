@@ -46,7 +46,7 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
             case SECTION_OTHER:
                 return 5;
             case SECTION_REQUEST:
-                return 0;
+                return 1;
         }
         return 0;
     }
@@ -70,11 +70,11 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
 
     @Override
     public void onBindViewHolder(FriendViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        Location w = new Location(1, "Watt");
+        Location w = new Location(1, 0, 0, 0, "Watt");
         SubLocation cc = new SubLocation(1, "Command and Control", w);
         Calendar c = Calendar.getInstance();
         c.set(2017, 3, 29, 17, 18);
-        Friend f = new Friend("00001", "Jimmy John", w, SubLocation.OTHER, "Bla", null, true);
+        Friend f = new Friend("00001", "Jimmy John", w, SubLocation.OTHER, "Bla", c.getTime(), true);
         holder.binding.setFriend(f);
     }
 

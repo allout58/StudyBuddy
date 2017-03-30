@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -21,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,17 +47,12 @@ import java.util.TimerTask;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.Constants;
-import edu.clemson.six.studybuddy.OnStartDragListener;
 import edu.clemson.six.studybuddy.R;
-import edu.clemson.six.studybuddy.controller.CarController;
-import edu.clemson.six.studybuddy.controller.CarListAdapter;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
-import edu.clemson.six.studybuddy.view.helper.ItemTouchHelperAdapter;
-import edu.clemson.six.studybuddy.view.helper.SwipeHelper;
 
-public class MainActivity extends AppCompatActivity implements ItemTouchHelperAdapter, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final int HANDLE_UPDATE_ALL = 1;
     public static final int HANDLE_UPDATE_POSITION = 2;
@@ -69,10 +62,11 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case HANDLE_UPDATE_ALL:
-                    CarListAdapter.getInstance().notifyDataSetChanged();
+//                    CarListAdapter.getInstance().notifyDataSetChanged();
                     break;
                 case HANDLE_UPDATE_POSITION:
-                    CarListAdapter.getInstance().notifyItemChanged(msg.arg2);
+//                    CarListAdapter.getInstance().notifyItemChanged(msg.arg2);
+                    break;
                 default:
                     Log.e("UpdateHandler", "Invalid argument: " + msg.arg1);
             }
@@ -151,26 +145,26 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         navView.setItemIconTintList(csl);
 
         // Setup the RecyclerView
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
+//
+//        layoutManager = new LinearLayoutManager(this);
+//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        recyclerView.setLayoutManager(layoutManager);
+//
+//        recyclerView.setAdapter(CarListAdapter.getInstance());
 
-        layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
+//        final SwipeHelper callback = new SwipeHelper();
+//        callback.addAdapter(CarListAdapter.getInstance());
+//        callback.addAdapter(this);
+//        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        recyclerView.setAdapter(CarListAdapter.getInstance());
-
-        final SwipeHelper callback = new SwipeHelper();
-        callback.addAdapter(CarListAdapter.getInstance());
-        callback.addAdapter(this);
-        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        CarListAdapter.getInstance().setOnStartDragListener(new OnStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-                itemTouchHelper.startDrag(viewHolder);
-            }
-        });
+//        CarListAdapter.getInstance().setOnStartDragListener(new OnStartDragListener() {
+//            @Override
+//            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+//                itemTouchHelper.startDrag(viewHolder);
+//            }
+//        });
 
         // Setup the SwipeRefreshContainer
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -197,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         new Timer("DBUpdateDirty").schedule(new TimerTask() {
             @Override
             public void run() {
-                CarController.getInstance().commitDirty();
+//                CarController.getInstance().commitDirty();
             }
         }, 10000, 10000);
 
@@ -231,41 +225,6 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
         super.onDestroy();
     }
 
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        return true;
-    }
-
-    @Override
-    public void onItemDismiss(final int position) {
-        if (CarController.getInstance().isTrashExportMode()) {
-            Snackbar.make(mainCoordinator, R.string.alert_undelete, BaseTransientBottomBar.LENGTH_LONG).show();
-        } else {
-            final Snackbar s = Snackbar.make(mainCoordinator, R.string.alert_delete, BaseTransientBottomBar.LENGTH_INDEFINITE);
-            final Timer t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (s.isShown()) {
-                        if (!CarController.getInstance().isTrashExportMode()) {
-                            CarController.getInstance().commitDeletes();
-                        }
-                        s.dismiss();
-                    }
-                }
-            }, 5000);
-            s.setAction(R.string.action_undo, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CarController.getInstance().revertDeletes();
-                    s.dismiss();
-                    t.cancel();
-                }
-            });
-            s.show();
-        }
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -346,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements ItemTouchHelperAd
             // Unknown signin response
         }
     }
+
     public class VerifyTask extends AsyncTask<String, Void, Void> {
 
         @Override

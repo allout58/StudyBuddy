@@ -15,9 +15,9 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_LOC = String.format("CREATE TABLE %s (" +
                     "%s INTEGER," +
                     "%s VARCHAR(80)," +
-                    "%s FLOAT," +
-                    "%s FLOAT," +
-                    "%s INTEGER" +
+                    "%s DOUBLE," +
+                    "%s DOUBLE," +
+                    "%s DOUBLE" +
                     ")",
             DBContract.LocationsContract.TABLE_NAME,
             DBContract.LocationsContract.COLUMN_ID,
@@ -57,9 +57,26 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.FriendsContract.COLUMN_CONFIRMED
     );
 
+    private static final String SQL_CREATE_UPDATE_INFO = String.format("CREATE TABLE %s (" +
+                    "%s INTEGER PRIMARY KEY," +
+                    "%s VARCHAR(48)," +
+                    "%s INTEGER" +
+                    ")",
+            DBContract.UpdateInfoEntry.TABLE_NAME,
+            DBContract.UpdateInfoEntry._ID,
+            DBContract.UpdateInfoEntry.COLUMN_USER_ID,
+            DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
+
     private static final String SQL_DELETE_LOC = "DROP TABLE IF EXISTS " + DBContract.LocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_SUB_LOC = "DROP TABLE IF EXISTS " + DBContract.SubLocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_FRIENDS = "DROP TABLE IF EXISTS " + DBContract.FriendsContract.TABLE_NAME;
+    private static final String SQL_DELETE_UPDATE_INFO = "DROP TABLE IF EXISTS " + DBContract.UpdateInfoEntry.TABLE_NAME;
+
+    private static final String SQL_INITIALIZE_UPDATE_INFO = String.format("INSERT INTO %s (%s, %s, %s) VALUES (1, '', -1)",
+            DBContract.UpdateInfoEntry.TABLE_NAME,
+            DBContract.UpdateInfoEntry._ID,
+            DBContract.UpdateInfoEntry.COLUMN_USER_ID,
+            DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -70,6 +87,9 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_LOC);
         db.execSQL(SQL_CREATE_SUB_LOC);
         db.execSQL(SQL_CREATE_FRIENDS);
+        db.execSQL(SQL_CREATE_UPDATE_INFO);
+
+        db.execSQL(SQL_INITIALIZE_UPDATE_INFO);
     }
 
     @Override
@@ -78,6 +98,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_SUB_LOC);
         db.execSQL(SQL_DELETE_LOC);
         db.execSQL(SQL_DELETE_FRIENDS);
+        db.execSQL(SQL_DELETE_UPDATE_INFO);
         onCreate(db);
     }
 

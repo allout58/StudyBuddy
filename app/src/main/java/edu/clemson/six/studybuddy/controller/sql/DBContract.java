@@ -1,5 +1,7 @@
 package edu.clemson.six.studybuddy.controller.sql;
 
+import android.provider.BaseColumns;
+
 /**
  * Created by jthollo on 3/27/2017.
  */
@@ -40,4 +42,13 @@ public class DBContract {
 
         public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_SUBLOCATION, COLUMN_BLURB, COLUMN_END_TIME, COLUMN_CONFIRMED};
     }
+
+    public static class UpdateInfoEntry implements BaseColumns {
+        public static final String TABLE_NAME = "UpdateInfo";
+        public static final String COLUMN_USER_ID = "userID";
+        public static final String COLUMN_LAST_TIME = "lastTime";
+
+        public static final String[] COLUMNS_ALL = {_ID, COLUMN_USER_ID, COLUMN_LAST_TIME};
+    }
+
 }
