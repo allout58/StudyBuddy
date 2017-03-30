@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "805299222455-8q5fdi0c45mvmnur35spg1svk2in90ju.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.clemson.six.studybuddy",
+            "certificate_hash": "d283a3b8a7f1490b521d0b504e0704650a8d0274"
+          }
+        },
+        {
           "client_id": "805299222455-vthas8it5pgimba58vl5s652eqsib1b9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
