@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, InformationActivity.class));
                 break;
             case R.id.action_logout:
+                Log.d("MainActivity", "Logging Out");
                 AuthUI.getInstance().signOut(this);
                 launchFirebaseAuthUI();
                 break;
@@ -340,9 +341,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 textViewUser.setText(u.getDisplayName());
                 Picasso.with(MainActivity.this)
                         .load(u.getPhotoUrl())
-                        .resize(150, 150)
+                        .resizeDimen(R.dimen.person_view_size, R.dimen.person_view_size)
                         .transform(new CircleTransform())
-                        .placeholder(R.drawable.ic_person_white_24dp)
+                        .placeholder(R.drawable.ic_person_white_150dp)
                         .into(imageViewUser);
             }
         }

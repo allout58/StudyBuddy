@@ -26,15 +26,24 @@
             android:layout_height="wrap_content"
             android:padding="10dp">
 
+            <ImageView
+                android:id="@+id/imageViewFriend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_person_white_150dp" />
+
             <TextView
                 android:id="@+id/titleTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginLeft="5dp"
                 android:text="@{friend.name}"
                 android:textSize="18sp"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/imageViewFriend"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -42,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@{friend.location.name}"
                 android:visibility="@{friend.location == friend.location.OTHER || friend.location == null ? View.GONE : View.VISIBLE}"
@@ -52,7 +62,6 @@
                 android:id="@+id/subLocTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
                 android:layout_marginTop="5dp"
                 android:text="@{friend.subLocation.name}"
                 android:visibility="@{friend.subLocation == friend.subLocation.OTHER || friend.subLocation == null ? View.GONE : View.VISIBLE}"
@@ -63,7 +72,6 @@
                 android:id="@+id/blurbTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
                 android:layout_marginTop="5dp"
                 android:text="@{friend.blurb}"
                 android:visibility="@{(friend.location == friend.location.OTHER || friend.subLocation == friend.subLocation.OTHER) &amp;&amp; friend.blurb != null ? View.VISIBLE : View.GONE}"
@@ -75,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="end"

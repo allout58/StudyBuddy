@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class Friend {
     private final String uid;
+    private String imageURL;
     private String name;
     private Location location;
     private SubLocation subLocation;
@@ -16,8 +17,9 @@ public class Friend {
     private Date endTime;
     private boolean confirmed;
 
-    public Friend(String uid, String name, Location location, SubLocation subLocation, String blurb, Date endTime, boolean confirmed) {
+    public Friend(String uid, String imageURL, String name, Location location, SubLocation subLocation, String blurb, Date endTime, boolean confirmed) {
         this.uid = uid;
+        this.imageURL = imageURL;
         this.name = name;
         this.location = location;
         this.subLocation = subLocation;
@@ -80,5 +82,13 @@ public class Friend {
 
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }

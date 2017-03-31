@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 
@@ -15,10 +17,7 @@ import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
-
-/**
- * Created by jthollo on 3/29/2017.
- */
+import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsListAdapter.FriendViewHolder> {
     public static final int SECTION_NEAR = 0;
@@ -74,8 +73,24 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
         SubLocation cc = new SubLocation(1, "Command and Control", w);
         Calendar c = Calendar.getInstance();
         c.set(2017, 3, 29, 17, 18);
-        Friend f = new Friend("00001", "Jimmy John", w, SubLocation.OTHER, "Bla", c.getTime(), true);
+//        https://lh6.googleusercontent.com/-wvYp75r5oeA/AAAAAAAAAAI/AAAAAAAAAQs/imhoKGVc7Jw/s96-c/photo.jpg
+        Friend f = new Friend("00001", "https://lh6.googleusercontent.com/-wvYp75r5oeA/AAAAAAAAAAI/AAAAAAAAAQs/imhoKGVc7Jw/s96-c/photo.jpg", "Jimmy John", w, SubLocation.OTHER, "Bla", c.getTime(), true);
         holder.binding.setFriend(f);
+        ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
+        if (!f.getImageURL().isEmpty())
+            Picasso.with(holder.parent.getContext())
+                    .load(f.getImageURL())
+                    .resizeDimen(R.dimen.person_view_size, R.dimen.person_view_size)
+                    .transform(new CircleTransform())
+                    .placeholder(R.drawable.ic_person_white_150dp)
+                    .into(v);
+        else
+            Picasso.with(holder.parent.getContext())
+                    .load(R.drawable.ic_person_white_150dp)
+                    .resizeDimen(R.dimen.person_view_size, R.dimen.person_view_size)
+                    .transform(new CircleTransform())
+                    .placeholder(R.drawable.ic_person_white_150dp)
+                    .into(v);
     }
 
     @Override
