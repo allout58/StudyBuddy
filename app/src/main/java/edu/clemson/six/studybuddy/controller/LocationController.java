@@ -1,8 +1,12 @@
 package edu.clemson.six.studybuddy.controller;
 
+import android.util.SparseArray;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 
 /**
@@ -12,21 +16,23 @@ import edu.clemson.six.studybuddy.model.Location;
 public class LocationController {
     private static final LocationController instance = new LocationController();
     private Map<String, Location> locationMap;
+    private SparseArray<Location> locationIDMap;
 
     private LocationController() {
         locationMap = new HashMap<>();
+        locationIDMap = new SparseArray<>();
     }
 
     public static LocationController getInstance() {
         return instance;
     }
 
-    public void addLocation(Location l) {
-        locationMap.put(l.getName(), l);
-    }
-
     public Location getLocation(String name) {
         return locationMap.get(name);
+    }
+
+    public Location getLocation(int id) {
+        return locationIDMap.get(id);
     }
 
     public Location[] getAllLocations() {
@@ -40,6 +46,12 @@ public class LocationController {
 
     public void reload() {
         locationMap.clear();
+        locationIDMap.clear();
         // Grab locations from the DB
+        List<Location> l = UnifiedDatabaseController.getInstance(null).getLocations();
+        for (Location loc : l) {
+            locationMap.put(loc.getName(), loc);
+            locationIDMap.put(loc.getId(), loc);
+        }
     }
 }

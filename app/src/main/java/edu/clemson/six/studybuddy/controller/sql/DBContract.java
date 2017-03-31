@@ -33,7 +33,7 @@ public class DBContract {
     public static class FriendsContract {
         public static final String TABLE_NAME = "Friends";
         public static final String COLUMN_UID = "firebase_uid";
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_NAME = "imageURL";
         public static final String COLUMN_LOCATION = LocationsContract.COLUMN_ID;
         public static final String COLUMN_SUBLOCATION = SubLocationsContract.COLUMN_ID;
         public static final String COLUMN_BLURB = "blurb";

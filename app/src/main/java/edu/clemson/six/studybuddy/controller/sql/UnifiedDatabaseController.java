@@ -50,7 +50,7 @@ public class UnifiedDatabaseController extends DatabaseController {
     }
 
     @Override
-    public void acceptRquest(String uid) {
+    public void acceptRequest(String uid) {
 
     }
 

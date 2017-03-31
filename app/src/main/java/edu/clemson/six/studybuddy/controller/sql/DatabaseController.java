@@ -19,7 +19,7 @@ public abstract class DatabaseController {
 
     public abstract void requestFriend(String uid);
 
-    public abstract void acceptRquest(String uid);
+    public abstract void acceptRequest(String uid);
 
     public abstract void close();
 }

@@ -13,7 +13,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "StudyBuddy.db";
 
     private static final String SQL_CREATE_LOC = String.format("CREATE TABLE %s (" +
-                    "%s INTEGER," +
+                    "%s INTEGER UNIQUE," +
                     "%s VARCHAR(80)," +
                     "%s DOUBLE," +
                     "%s DOUBLE," +
@@ -27,8 +27,8 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.LocationsContract.COLUMN_RADIUS
     );
 
-    private static final String SQL_CREATE_SUB_LOC = String.format("CREAT TABLE %s (" +
-                    "%s INTEGER," +
+    private static final String SQL_CREATE_SUB_LOC = String.format("CREATE TABLE %s (" +
+                    "%s INTEGER UNIQUE," +
                     "%s VARCHAR(80)," +
                     "%s INTEGER" +
                     ")",
@@ -39,8 +39,8 @@ public class DbHelper extends SQLiteOpenHelper {
     );
 
     private static final String SQL_CREATE_FRIENDS = String.format("CREATE TABLE %s (" +
-                    "%s VARCHAR(48)," +
-                    "%s VARCHAR(60)," +
+                    "%s VARCHAR(48) UNIQUE," +
+                    "%s VARCHAR(200)," +
                     "%s INTEGER," +
                     "%s INTEGER," +
                     "%s TEXT," +
@@ -59,7 +59,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_UPDATE_INFO = String.format("CREATE TABLE %s (" +
                     "%s INTEGER PRIMARY KEY," +
-                    "%s VARCHAR(48)," +
+                    "%s VARCHAR(64)," +
                     "%s INTEGER" +
                     ")",
             DBContract.UpdateInfoEntry.TABLE_NAME,

@@ -7,18 +7,18 @@ package edu.clemson.six.studybuddy.model;
 public class SubLocation {
     public static final SubLocation OTHER = new SubLocation(-1, "Other", null);
 
-    private final int id;
+    private final int subID;
     private final String name;
     private final Location parent;
 
     public SubLocation(int id, String name, Location parent) {
-        this.id = id;
+        this.subID = id;
         this.name = name;
         this.parent = parent;
     }
 
     public int getId() {
-        return id;
+        return subID;
     }
 
     public String getName() {

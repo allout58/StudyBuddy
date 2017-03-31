@@ -1,10 +1,13 @@
 package edu.clemson.six.studybuddy.controller;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,16 +19,16 @@ import java.util.Map;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
-import edu.clemson.six.studybuddy.model.Car;
+import edu.clemson.six.studybuddy.model.Location;
+import edu.clemson.six.studybuddy.model.SubLocation;
 
 /**
  * Created by James Hollowell on 3/3/2017.
  */
 
 public class SyncController {
-    // TODO: we will need some way to "repair" ids when syncing, as the remote db is really the only one that knows the next ID
-    // Idea: This won't prevent the repair process entirely, but if we push to the API before the local database and then resync,
-    //  we should be fine unless we have no connection, in which chase we can just fall back to the local db and repair
+    private static final String TAG = "SyncController";
+
     private static final SyncController instance = new SyncController();
     private int serverTimeOffset;
 
@@ -36,24 +39,33 @@ public class SyncController {
         return instance;
     }
 
+    public void syncLocations() {
+        Log.d(TAG, "Synchronizing locations and sublocations with the server");
+        FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                LocSyncTask t = new LocSyncTask();
+                t.execute(task.getResult().getToken());
+            }
+        });
+
+    }
+
     public void refresh(Runnable callback) {
-        Log.d("SyncController", "Refreshing content");
-        NewSyncTask task = new NewSyncTask();
-        task.setCallback(callback);
-        task.execute();
+        Log.d(TAG, "Refreshing content");
     }
 
     public void beginSync() {
         if (UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentUserID() != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
             // Do first time download
-            Log.d("SyncController", "Initial synchronization for user");
+            Log.d(TAG, "Initial synchronization for user");
 //            UnifiedDatabaseController.getInstance(null).getLocal().clearCars();
 //            FirstSyncTask task = new FirstSyncTask();
 //            task.execute();
         } else {
             // Check if need to download/upload according to timestamps
             // Do synchronize download
-            Log.d("SyncController", "Synchronize new items");
+            Log.d(TAG, "Synchronize new items");
 //            NewSyncTask task = new NewSyncTask();
 //            task.execute();
         }
@@ -67,64 +79,41 @@ public class SyncController {
         this.serverTimeOffset = serverTimeOffset;
     }
 
-    private class FirstSyncTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            Map<String, String> args = new HashMap<>();
-            args.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-            ConnectionDetails details = APIConnector.setupConnection("sync.firsttime", args, ConnectionDetails.Method.GET);
-            try {
-                JsonElement obj = APIConnector.connect(details);
-                Gson gson = new Gson();
-                Car c;
-                for (JsonElement el : obj.getAsJsonArray()) {
-                    JsonObject o = el.getAsJsonObject();
-                    c = gson.fromJson(el, Car.class);
-                    String colo = o.get("colorHex").getAsString();
-                    c.setColor(Color.parseColor(colo));
-//                    UnifiedDatabaseController.getInstance(null).getLocal().syncCar(c);
-                }
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                return true;
-            } catch (IOException e) {
-                Log.e("FirstSyncTask", "Error connecting to API to download initial database configuration", e);
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-//                CarController.getInstance().reload();
-            }
-        }
-    }
-
-    private class NewSyncTask extends AsyncTask<Void, Integer, Boolean> {
+    private class LocSyncTask extends AsyncTask<String, Integer, Boolean> {
 
         private Runnable callback;
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(String... params) {
             // Offset the most recent sync time for the remote server
             long sync = UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentSync();
             sync += serverTimeOffset;
 
             Map<String, String> args = new HashMap<>();
-            args.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+            args.put("jwt", params[0]);
             args.put("last_upd", String.valueOf(sync));
-            ConnectionDetails dets = APIConnector.setupConnection("sync.getnew", args, ConnectionDetails.Method.GET);
+            ConnectionDetails dets = APIConnector.setupConnection("sync.getnew", args, ConnectionDetails.Method.POST);
             try {
                 JsonElement obj = APIConnector.connect(dets);
                 Gson gson = new Gson();
-                Car c;
-                for (JsonElement el : obj.getAsJsonArray()) {
+                Location l;
+                SubLocation sl;
+                if (obj.getAsJsonObject().has("error")) {
+                    Log.e(TAG, "Remote error: " + obj.getAsJsonObject().get("error").getAsString());
+                    return false;
+                }
+                for (JsonElement el : obj.getAsJsonObject().get("locations").getAsJsonArray()) {
                     JsonObject o = el.getAsJsonObject();
-                    c = gson.fromJson(el, Car.class);
-                    c.setColor(Color.parseColor(o.get("colorHex").getAsString()));
-                    // TODO: Change this to something intelligent? Like look for a newer car on this end?
-//                    UnifiedDatabaseController.getInstance(null).getLocal().syncCar(c);
+                    l = gson.fromJson(o, Location.class);
+                    UnifiedDatabaseController.getInstance(null).getLocal().syncLocation(l);
+                }
+                LocationController.getInstance().reload();
+                for (JsonElement el : obj.getAsJsonObject().get("sublocations").getAsJsonArray()) {
+                    JsonObject o = el.getAsJsonObject();
+                    Location loc = LocationController.getInstance().getLocation(o.get("locationID").getAsInt());
+                    sl = new SubLocation(o.get("subID").getAsInt(), o.get("name").getAsString(), loc);
+                    loc.addSubLocation(sl);
+                    UnifiedDatabaseController.getInstance(null).getLocal().syncSubLocation(sl);
                 }
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -138,7 +127,6 @@ public class SyncController {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             if (aBoolean) {
-//                CarController.getInstance().reload();
                 if (this.callback != null) {
                     callback.run();
                 }

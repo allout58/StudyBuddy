@@ -3,6 +3,7 @@ package edu.clemson.six.studybuddy.controller.sql;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class LocalDatabaseController extends DatabaseController {
     }
 
     @Override
-    public void acceptRquest(String uid) {
+    public void acceptRequest(String uid) {
 
     }
 
@@ -110,7 +111,7 @@ public class LocalDatabaseController extends DatabaseController {
             if (cursor.moveToFirst()) {
                 return cursor.getLong(cursor.getColumnIndex(DBContract.UpdateInfoEntry.COLUMN_LAST_TIME));
             } else {
-                return -1;
+                return 0;
             }
         } finally {
             cursor.close();
@@ -124,6 +125,63 @@ public class LocalDatabaseController extends DatabaseController {
         String selection = DBContract.UpdateInfoEntry._ID + " = ?";
         String[] args = {"1"};
         db.update(DBContract.UpdateInfoEntry.TABLE_NAME, cv, selection, args);
+    }
+
+    public void syncLocation(Location l) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.LocationsContract.COLUMN_ID, l.getId());
+        cv.put(DBContract.LocationsContract.COLUMN_NAME, l.getName());
+        cv.put(DBContract.LocationsContract.COLUMN_LAT, l.getLatitude());
+        cv.put(DBContract.LocationsContract.COLUMN_LONG, l.getLongitude());
+        cv.put(DBContract.LocationsContract.COLUMN_RADIUS, l.getRadius());
+
+        try {
+            db.insertOrThrow(DBContract.LocationsContract.TABLE_NAME, null, cv);
+        } catch (SQLException e) {
+            String selection = DBContract.LocationsContract.COLUMN_ID + " = ?";
+            String[] args = {String.valueOf(l.getId())};
+            cv.remove(DBContract.LocationsContract.COLUMN_ID);
+            db.update(DBContract.LocationsContract.TABLE_NAME, cv, selection, args);
+        }
+    }
+
+    public void syncSubLocation(SubLocation sl) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.SubLocationsContract.COLUMN_ID, sl.getId());
+        cv.put(DBContract.SubLocationsContract.COLUMN_NAME, sl.getName());
+        cv.put(DBContract.SubLocationsContract.COLUMN_LOCATION, sl.getParent().getId());
+
+        try {
+            db.insertOrThrow(DBContract.SubLocationsContract.TABLE_NAME, null, cv);
+        } catch (SQLException e) {
+            String selection = DBContract.SubLocationsContract.COLUMN_ID + " = ?";
+            String[] args = {String.valueOf(sl.getId())};
+            cv.remove(DBContract.SubLocationsContract.COLUMN_ID);
+            db.update(DBContract.SubLocationsContract.TABLE_NAME, cv, selection, args);
+        }
+    }
+
+    public void syncFriend(Friend f) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.FriendsContract.COLUMN_UID, f.getUid());
+        cv.put(DBContract.FriendsContract.COLUMN_NAME, f.getName());
+        cv.put(DBContract.FriendsContract.COLUMN_LOCATION, f.getLocation().getId());
+        cv.put(DBContract.FriendsContract.COLUMN_SUBLOCATION, f.getSubLocation().getId());
+        cv.put(DBContract.FriendsContract.COLUMN_BLURB, f.getBlurb());
+        cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().toString());
+        cv.put(DBContract.FriendsContract.COLUMN_CONFIRMED, f.isConfirmed());
+
+        try {
+            db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
+        } catch (SQLException e) {
+            String selection = DBContract.FriendsContract.COLUMN_UID + " = ?";
+            String[] args = {String.valueOf(f.getUid())};
+            cv.remove(DBContract.FriendsContract.COLUMN_UID);
+            db.update(DBContract.FriendsContract.TABLE_NAME, cv, selection, args);
+        }
     }
 
 }

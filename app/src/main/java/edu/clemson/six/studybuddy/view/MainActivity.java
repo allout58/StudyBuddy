@@ -54,6 +54,7 @@ import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
+import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -122,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (task.isSuccessful()) {
                         VerifyTask verifyTask = new VerifyTask();
                         verifyTask.execute(task.getResult().getToken());
-//                        auth.getCurrentUser()
                     } else {
                         task.getException().printStackTrace();
                     }
@@ -172,23 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        });
 
-        // Setup the SwipeRefreshContainer
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                SyncController.getInstance().refresh(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeContainer.setRefreshing(false);
-                    }
-                });
-            }
-        });
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
+        UnifiedDatabaseController.getInstance(this);
 
         // Initialize the database connection
 //        UnifiedDatabaseController.getInstance(this);
@@ -325,9 +309,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
             args.put("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            args.put("imageURL", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
             ConnectionDetails con = APIConnector.setupConnection("user.firebase_login", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
+                SyncController.getInstance().setServerTimeOffset(obj.get("currentTime").getAsInt());
                 Log.d("VerifyTask", obj.toString());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -348,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .transform(new CircleTransform())
                         .placeholder(R.drawable.ic_person_white_150dp)
                         .into(imageViewUser);
+                SyncController.getInstance().syncLocations();
             }
         }
     }

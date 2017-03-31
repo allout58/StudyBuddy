@@ -10,14 +10,14 @@ import java.util.List;
 public class Location {
     public static final Location OTHER = new Location(-1, 0, 0, 0, "Other");
 
-    private final int id;
+    private final int locationID;
     private final double longitude, latitude;
     private final double radius;
     private final String name;
     private final List<SubLocation> sublocations;
 
     public Location(int id, double longitude, double latitude, double radius, String name) {
-        this.id = id;
+        this.locationID = id;
         this.longitude = longitude;
         this.latitude = latitude;
         this.radius = radius;
@@ -26,7 +26,7 @@ public class Location {
     }
 
     public int getId() {
-        return id;
+        return locationID;
     }
 
     public String getName() {
