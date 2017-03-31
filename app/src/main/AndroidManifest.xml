@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="edu.clemson.six.studybuddy">
+    package="edu.clemson.six.studybuddy">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,62 +23,77 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="edu.clemson.six.studybuddy.view.MainActivity"
+            android:name=".view.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.InformationActivity"
+            android:name=".view.InformationActivity"
             android:label="@string/title_activity_information"
-            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity"
+            android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity" />
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.SettingsActivity"
+            android:name=".view.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity">
+            android:parentActivityName=".view.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity" />
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.FriendsActivity"
+            android:name=".view.FriendsActivity"
             android:label="@string/title_activity_friends"
-            android:parentActivityName="edu.clemson.six.studybuddy.view.MainActivity"
+            android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity" />
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.AddFriendActivity"
+            android:name=".view.AddFriendActivity"
             android:label="@string/title_activity_friend_add">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.FriendsActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.FriendsActivity" />
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.FriendRequestsActivity"
+            android:name=".view.FriendRequestsActivity"
             android:label="@string/title_activity_friend_request">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.FriendsActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.FriendsActivity" />
         </activity>
         <activity
-            android:name="edu.clemson.six.studybuddy.view.ChangeLocationActivity"
+            android:name=".view.ChangeLocationActivity"
             android:label="@string/title_activity_change_loc">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.MainActivity"/>
+                android:value="edu.clemson.six.studybuddy.view.MainActivity" />
         </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".view.MapActivity"
+            android:label="@string/title_activity_map"></activity>
     </application>
 
 </manifest>

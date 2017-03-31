@@ -151,7 +151,7 @@ StackOverflow - Multiple small problems\n
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value"/>
+    <string-array name="multi_select_list_preference_default_value" />
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
@@ -174,4 +174,5 @@ StackOverflow - Multiple small problems\n
     <!-- FB Login Stuff -->
     <string name="facebook_application_id" translatable="false">396877390694093</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb396877390694093</string>
+    <string name="title_activity_map">Map</string>
 </resources>
