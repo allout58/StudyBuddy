@@ -3,24 +3,31 @@ package edu.clemson.six.studybuddy.view;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.ArrayLinkedVariables;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 import javax.net.ssl.ManagerFactoryParameters;
 
@@ -34,6 +41,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     LocationManager locationManager;
     LocationListener locationListener;
+    ArrayList<Circle> locationsList = new ArrayList<Circle>();
+
+    //Manually add locations to the map
+    public void populateMapLocations() {
+        locationsList.add(mMap.addCircle(new CircleOptions() // Clemson Library
+                .center(new LatLng(34.676624, -82.836401))
+                .radius(55)
+                .strokeColor(Color.BLUE)));
+        locationsList.add(mMap.addCircle(new CircleOptions() // Clemson McAdams
+                .center(new LatLng(34.675869, -82.834507))
+                .radius(50)
+                .strokeColor(Color.BLUE)));
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -57,8 +77,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 17));
         mMap.addMarker(new MarkerOptions().title("Your Location").position(userLocation));
+        populateMapLocations();
     }
 
     @Override
@@ -95,6 +116,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onLocationChanged(Location location) {
 
                 updateMap(location);
+                for(int i=0; i<locationsList.size(); i++) {
+                    Location point = new Location("dist");
+                            point.setLongitude(locationsList.get(i).getCenter().longitude);
+                            point.setLatitude(locationsList.get(i).getCenter().latitude);
+                    if(location.distanceTo(point)<55)
+                    {
+                        //works but the toast will not go away
+                        //Toast.makeText(getBaseContext(), "Entered Radius", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
 
             @Override
@@ -129,5 +160,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         }
+        populateMapLocations();
     }
 }
