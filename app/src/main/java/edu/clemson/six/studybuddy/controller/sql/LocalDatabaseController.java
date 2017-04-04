@@ -174,12 +174,12 @@ public class LocalDatabaseController extends DatabaseController {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(DBContract.FriendsContract.COLUMN_UID, f.getUid());
+        cv.put(DBContract.FriendsContract.COLUMN_IMAGE_URL, f.getImageURL());
         cv.put(DBContract.FriendsContract.COLUMN_NAME, f.getName());
         cv.put(DBContract.FriendsContract.COLUMN_LOCATION, f.getLocation().getId());
         cv.put(DBContract.FriendsContract.COLUMN_SUBLOCATION, f.getSubLocation().getId());
         cv.put(DBContract.FriendsContract.COLUMN_BLURB, f.getBlurb());
         cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().toString());
-        cv.put(DBContract.FriendsContract.COLUMN_CONFIRMED, f.isConfirmed());
 
         try {
             db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
@@ -191,4 +191,20 @@ public class LocalDatabaseController extends DatabaseController {
         }
     }
 
+    public void syncRequest(Friend f, boolean isMine) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.FriendsRequestsContract.COLUMN_UID, f.getUid());
+        cv.put(DBContract.FriendsRequestsContract.COLUMN_IMAGE_URL, f.getImageURL());
+        cv.put(DBContract.FriendsRequestsContract.COLUMN_NAME, f.getName());
+        cv.put(DBContract.FriendsRequestsContract.COLUMN_IS_MINE, isMine);
+        try {
+            db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
+        } catch (SQLException e) {
+            String selection = DBContract.FriendsContract.COLUMN_UID + " = ?";
+            String[] args = {String.valueOf(f.getUid())};
+            cv.remove(DBContract.FriendsContract.COLUMN_UID);
+            db.update(DBContract.FriendsContract.TABLE_NAME, cv, selection, args);
+        }
+    }
 }

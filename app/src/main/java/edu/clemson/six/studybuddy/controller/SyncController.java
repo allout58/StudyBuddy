@@ -19,6 +19,7 @@ import java.util.Map;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
 
@@ -49,11 +50,18 @@ public class SyncController {
                 t.execute(task.getResult().getToken());
             }
         });
-
     }
 
-    public void refresh(Runnable callback) {
+    public void refreshLocations(final Runnable callback) {
         Log.d(TAG, "Refreshing content");
+        FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                LocSyncTask t = new LocSyncTask();
+                t.setCallback(callback);
+                t.execute(task.getResult().getToken());
+            }
+        });
     }
 
     public void beginSync() {
@@ -78,6 +86,47 @@ public class SyncController {
 
     public void setServerTimeOffset(int serverTimeOffset) {
         this.serverTimeOffset = serverTimeOffset;
+    }
+
+    private class FriendSyncTask extends AsyncTask<String, Integer, Boolean> {
+        private static final String TAG = "FriendSyncTask";
+        private Runnable callback;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Map<String, String> args = new HashMap<>();
+            args.put("jwt", params[0]);
+            ConnectionDetails dets = APIConnector.setupConnection("friend.getall", args, ConnectionDetails.Method.POST);
+            try {
+                JsonElement obj = APIConnector.connect(dets);
+                Gson gson = new Gson();
+                Friend friend;
+                if (obj.getAsJsonObject().has("error")) {
+                    Log.e(TAG, "Remote error: " + obj.getAsJsonObject().get("error").getAsString());
+                    return false;
+                }
+                for (JsonElement el : obj.getAsJsonObject().get("connected").getAsJsonArray()) {
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean booleanResult) {
+            if (booleanResult) {
+                if (callback != null) {
+                    callback.run();
+                }
+            }
+            super.onPostExecute(booleanResult);
+        }
+
+        public void setCallback(Runnable callback) {
+            this.callback = callback;
+        }
     }
 
     private class LocSyncTask extends AsyncTask<String, Integer, Boolean> {

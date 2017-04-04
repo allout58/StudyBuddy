@@ -33,14 +33,24 @@ public class DBContract {
     public static class FriendsContract {
         public static final String TABLE_NAME = "Friends";
         public static final String COLUMN_UID = "firebase_uid";
-        public static final String COLUMN_NAME = "imageURL";
+        public static final String COLUMN_NAME = "realName";
+        public static final String COLUMN_IMAGE_URL = "imageURL";
         public static final String COLUMN_LOCATION = LocationsContract.COLUMN_ID;
         public static final String COLUMN_SUBLOCATION = SubLocationsContract.COLUMN_ID;
         public static final String COLUMN_BLURB = "blurb";
         public static final String COLUMN_END_TIME = "endTime";
-        public static final String COLUMN_CONFIRMED = "confirmed";
 
-        public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_LOCATION, COLUMN_SUBLOCATION, COLUMN_BLURB, COLUMN_END_TIME, COLUMN_CONFIRMED};
+        public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_IMAGE_URL, COLUMN_LOCATION, COLUMN_SUBLOCATION, COLUMN_BLURB, COLUMN_END_TIME};
+    }
+
+    public static class FriendsRequestsContract {
+        public static final String TABLE_NAME = "Requests";
+        public static final String COLUMN_UID = "firebase_uid";
+        public static final String COLUMN_NAME = "realName";
+        public static final String COLUMN_IMAGE_URL = "imageURL";
+        public static final String COLUMN_IS_MINE = "isMine";
+
+        public static final String[] COLUMNS_ALL = {COLUMN_UID, COLUMN_NAME, COLUMN_IMAGE_URL, COLUMN_IS_MINE};
     }
 
     public static class UpdateInfoEntry implements BaseColumns {

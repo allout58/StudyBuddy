@@ -33,7 +33,6 @@ public class UnifiedDatabaseController extends DatabaseController {
         return local.getLocations();
     }
 
-
     @Override
     public List<Friend> getFriends() {
         return null;

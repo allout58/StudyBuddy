@@ -41,20 +41,20 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_FRIENDS = String.format("CREATE TABLE %s (" +
                     "%s VARCHAR(48) UNIQUE," +
                     "%s VARCHAR(200)," +
+                    "%s VARCHAR(60)," +
                     "%s INTEGER," +
                     "%s INTEGER," +
                     "%s TEXT," +
-                    "%s TIME," +
-                    "%s INTEGER" +
+                    "%s TIME" +
                     ")",
             DBContract.FriendsContract.TABLE_NAME,
             DBContract.FriendsContract.COLUMN_UID,
+            DBContract.FriendsContract.COLUMN_IMAGE_URL,
             DBContract.FriendsContract.COLUMN_NAME,
             DBContract.FriendsContract.COLUMN_LOCATION,
             DBContract.FriendsContract.COLUMN_SUBLOCATION,
             DBContract.FriendsContract.COLUMN_BLURB,
-            DBContract.FriendsContract.COLUMN_END_TIME,
-            DBContract.FriendsContract.COLUMN_CONFIRMED
+            DBContract.FriendsContract.COLUMN_END_TIME
     );
 
     private static final String SQL_CREATE_UPDATE_INFO = String.format("CREATE TABLE %s (" +
@@ -67,10 +67,23 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.UpdateInfoEntry.COLUMN_USER_ID,
             DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
 
+    private static final String SQL_CREATE_FRIEND_REQUEST = String.format("CREATE TABLE %s (" +
+                    "%s VARCHAR(64)," +
+                    "%s VARCHAR(60)," +
+                    "%s VARCHAR(200)," +
+                    "%s INTEGER" +
+                    ")",
+            DBContract.FriendsRequestsContract.TABLE_NAME,
+            DBContract.FriendsRequestsContract.COLUMN_UID,
+            DBContract.FriendsRequestsContract.COLUMN_NAME,
+            DBContract.FriendsRequestsContract.COLUMN_IMAGE_URL,
+            DBContract.FriendsRequestsContract.COLUMN_IS_MINE);
+
     private static final String SQL_DELETE_LOC = "DROP TABLE IF EXISTS " + DBContract.LocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_SUB_LOC = "DROP TABLE IF EXISTS " + DBContract.SubLocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_FRIENDS = "DROP TABLE IF EXISTS " + DBContract.FriendsContract.TABLE_NAME;
     private static final String SQL_DELETE_UPDATE_INFO = "DROP TABLE IF EXISTS " + DBContract.UpdateInfoEntry.TABLE_NAME;
+    private static final String SQL_DELETE_FRIEND_REQUET = "DROP TABLE IF EXISTS " + DBContract.FriendsRequestsContract.TABLE_NAME;
 
     private static final String SQL_INITIALIZE_UPDATE_INFO = String.format("INSERT INTO %s (%s, %s, %s) VALUES (1, '', -1)",
             DBContract.UpdateInfoEntry.TABLE_NAME,
@@ -88,6 +101,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_SUB_LOC);
         db.execSQL(SQL_CREATE_FRIENDS);
         db.execSQL(SQL_CREATE_UPDATE_INFO);
+        db.execSQL(SQL_CREATE_FRIEND_REQUEST);
 
         db.execSQL(SQL_INITIALIZE_UPDATE_INFO);
     }
@@ -99,6 +113,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_LOC);
         db.execSQL(SQL_DELETE_FRIENDS);
         db.execSQL(SQL_DELETE_UPDATE_INFO);
+        db.execSQL(SQL_DELETE_FRIEND_REQUET);
         onCreate(db);
     }
 

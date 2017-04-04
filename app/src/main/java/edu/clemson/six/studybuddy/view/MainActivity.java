@@ -210,11 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-//        if (!CarController.getInstance().isTrashExportMode()) {
-//            CarController.getInstance().commitDeletes();
-//        }
-//        CarController.getInstance().commitDirty();
-//        UnifiedDatabaseController.getInstance(null).close();
+        UnifiedDatabaseController.getInstance(null).close();
         super.onDestroy();
     }
 
@@ -306,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public class VerifyTask extends AsyncTask<String, Void, Boolean> {
-
         @Override
         protected Boolean doInBackground(String... params) {
             Map<String, String> args = new HashMap<>();
@@ -317,7 +312,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
                 SyncController.getInstance().setServerTimeOffset(obj.get("currentTime").getAsInt());
-                Log.d("VerifyTask", obj.toString());
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
