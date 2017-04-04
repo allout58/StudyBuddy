@@ -17,6 +17,7 @@ public class LocationController {
     private static final LocationController instance = new LocationController();
     private Map<String, Location> locationMap;
     private SparseArray<Location> locationIDMap;
+    private Location[] locations;
 
     private LocationController() {
         locationMap = new HashMap<>();
@@ -27,26 +28,40 @@ public class LocationController {
         return instance;
     }
 
-    public Location getLocation(String name) {
+    public Location getLocationByName(String name) {
         return locationMap.get(name);
     }
 
-    public Location getLocation(int id) {
+    public Location getLocationById(int id) {
         return locationIDMap.get(id);
     }
 
-    public Location[] getAllLocations() {
-        Location[] ret = new Location[locationMap.size()];
-        int i = 0;
-        for (Map.Entry<String, Location> entry : locationMap.entrySet()) {
-            ret[i++] = entry.getValue();
+    public Location getLocation(int pos) {
+        if (locations == null) {
+            getAllLocations();
         }
-        return ret;
+        return locations[pos];
+    }
+
+    public int size() {
+        return locationMap.size();
+    }
+
+    public Location[] getAllLocations() {
+        if (locations == null) {
+            locations = new Location[locationMap.size()];
+            int i = 0;
+            for (Map.Entry<String, Location> entry : locationMap.entrySet()) {
+                locations[i++] = entry.getValue();
+            }
+        }
+        return locations;
     }
 
     public void reload() {
         locationMap.clear();
         locationIDMap.clear();
+        locations = null;
         // Grab locations from the DB
         List<Location> l = UnifiedDatabaseController.getInstance(null).getLocations();
         for (Location loc : l) {

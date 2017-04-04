@@ -51,10 +51,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
+import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.model.Location;
+import edu.clemson.six.studybuddy.model.SubLocation;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -334,7 +337,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .transform(new CircleTransform())
                         .placeholder(R.drawable.ic_person_white_150dp)
                         .into(imageViewUser);
-                SyncController.getInstance().syncLocations();
+                SyncController.getInstance().syncLocations(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("VerifyTask", "Synchronized");
+                        for (Location l :
+                                LocationController.getInstance().getAllLocations()) {
+                            Log.d("VerifyTask", l.toString());
+                            for (SubLocation sl :
+                                    l.getSublocations()) {
+                                Log.d("VerifyTask", "\t" + sl.getId() + " " + sl.getName());
+                            }
+                        }
+                    }
+                });
             }
         }
     }

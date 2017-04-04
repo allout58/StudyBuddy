@@ -39,12 +39,13 @@ public class SyncController {
         return instance;
     }
 
-    public void syncLocations() {
+    public void syncLocations(final Runnable r) {
         Log.d(TAG, "Synchronizing locations and sublocations with the server");
         FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
                 LocSyncTask t = new LocSyncTask();
+                t.setCallback(r);
                 t.execute(task.getResult().getToken());
             }
         });
@@ -80,7 +81,7 @@ public class SyncController {
     }
 
     private class LocSyncTask extends AsyncTask<String, Integer, Boolean> {
-
+        private static final String TAG = "LocSyncTask";
         private Runnable callback;
 
         @Override
@@ -117,9 +118,10 @@ public class SyncController {
                 }
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
                 UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                Log.d(TAG, "Locations Synchronized");
                 return true;
             } catch (IOException e) {
-                Log.e("NewSyncTask", "Error connecting to API to download synchronized data", e);
+                Log.e(TAG, "Error connecting to API to download synchronized data", e);
                 return false;
             }
         }

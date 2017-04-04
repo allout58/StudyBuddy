@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import edu.clemson.six.studybuddy.model.SubLocation;
 
 public class LocalDatabaseController extends DatabaseController {
 
+    private static final String TAG = "LocalDB";
+
     final DbHelper dbHelper;
 
     public LocalDatabaseController(Context context) {
@@ -31,13 +34,17 @@ public class LocalDatabaseController extends DatabaseController {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.query(DBContract.LocationsContract.TABLE_NAME, DBContract.LocationsContract.COLUMNS_ALL, "", null, null, null, null);
         while (c.moveToNext()) {
-            Location loc = new Location(c.getInt(c.getColumnIndex(DBContract.LocationsContract.COLUMN_ID)),
-                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LONG)),
-                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LAT)),
-                    c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_RADIUS)),
-                    c.getString(c.getColumnIndex(DBContract.LocationsContract.COLUMN_NAME)));
-            addSubLocationsForLocation(loc);
-            l.add(loc);
+            try {
+                Location loc = new Location(c.getInt(c.getColumnIndex(DBContract.LocationsContract.COLUMN_ID)),
+                        c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LONG)),
+                        c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_LAT)),
+                        c.getDouble(c.getColumnIndex(DBContract.LocationsContract.COLUMN_RADIUS)),
+                        c.getString(c.getColumnIndex(DBContract.LocationsContract.COLUMN_NAME)));
+                addSubLocationsForLocation(loc);
+                l.add(loc);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to get location from db", e);
+            }
         }
         c.close();
         return l;

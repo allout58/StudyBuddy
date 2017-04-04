@@ -2,6 +2,7 @@ package edu.clemson.six.studybuddy.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by jthollo on 3/28/2017.
@@ -53,5 +54,10 @@ public class Location {
 
     public double getRadius() {
         return radius;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "(%d) %s (lon:%f,lat:%f) Radius %f", locationID, name, longitude, latitude, radius);
     }
 }

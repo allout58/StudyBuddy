@@ -8,46 +8,35 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.solver.ArrayLinkedVariables;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-
-import javax.net.ssl.ManagerFactoryParameters;
-
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.LocationController;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-
     LocationManager locationManager;
     LocationListener locationListener;
+    private GoogleMap mMap;
 
     //Manually add locations to the map
     public void populateMapLocations() {
-        for(int i = 0; i< LocationController.getInstance().getAllLocations().length; i++) {
+        for (int i = 0; i < LocationController.getInstance().size(); i++) {
             mMap.addCircle(new CircleOptions()
-                    .center(new LatLng(LocationController.getInstance().getAllLocations()[i].getLongitude(), LocationController.getInstance().getAllLocations()[i].getLatitude()))
+                    .center(new LatLng(LocationController.getInstance().getAllLocations()[i].getLatitude(), LocationController.getInstance().getAllLocations()[i].getLongitude()))
                     .radius(LocationController.getInstance().getAllLocations()[i].getRadius()/3.0)
                     .strokeColor(Color.BLUE));
         }
