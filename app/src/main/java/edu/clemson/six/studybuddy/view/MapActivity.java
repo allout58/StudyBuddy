@@ -34,6 +34,7 @@ import javax.net.ssl.ManagerFactoryParameters;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.R;
+import edu.clemson.six.studybuddy.controller.LocationController;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -41,18 +42,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     LocationManager locationManager;
     LocationListener locationListener;
-    ArrayList<Circle> locationsList = new ArrayList<Circle>();
 
     //Manually add locations to the map
     public void populateMapLocations() {
-        locationsList.add(mMap.addCircle(new CircleOptions() // Clemson Library
-                .center(new LatLng(34.676624, -82.836401))
-                .radius(55)
-                .strokeColor(Color.BLUE)));
-        locationsList.add(mMap.addCircle(new CircleOptions() // Clemson McAdams
-                .center(new LatLng(34.675869, -82.834507))
-                .radius(50)
-                .strokeColor(Color.BLUE)));
+        for(int i = 0; i< LocationController.getInstance().getAllLocations().length; i++) {
+            mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(LocationController.getInstance().getAllLocations()[i].getLongitude(), LocationController.getInstance().getAllLocations()[i].getLatitude()))
+                    .radius(LocationController.getInstance().getAllLocations()[i].getRadius()/3.0)
+                    .strokeColor(Color.BLUE));
+        }
     }
 
     @Override
@@ -116,10 +114,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             public void onLocationChanged(Location location) {
 
                 updateMap(location);
-                for(int i=0; i<locationsList.size(); i++) {
+                for(int i=0; i<LocationController.getInstance().getAllLocations().length; i++) {
                     Location point = new Location("dist");
-                            point.setLongitude(locationsList.get(i).getCenter().longitude);
-                            point.setLatitude(locationsList.get(i).getCenter().latitude);
+                            point.setLongitude(LocationController.getInstance().getLocation(i).getLongitude());
+                            point.setLatitude(LocationController.getInstance().getLocation(i).getLatitude());
                     if(location.distanceTo(point)<55)
                     {
                         //works but the toast will not go away
