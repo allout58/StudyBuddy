@@ -85,7 +85,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_UPDATE_INFO = "DROP TABLE IF EXISTS " + DBContract.UpdateInfoEntry.TABLE_NAME;
     private static final String SQL_DELETE_FRIEND_REQUET = "DROP TABLE IF EXISTS " + DBContract.FriendsRequestsContract.TABLE_NAME;
 
-    private static final String SQL_INITIALIZE_UPDATE_INFO = String.format("INSERT INTO %s (%s, %s, %s) VALUES (1, '', -1)",
+    private static final String SQL_INITIALIZE_UPDATE_INFO = String.format("INSERT INTO %s (%s, %s, %s) VALUES (1, '', 0)",
             DBContract.UpdateInfoEntry.TABLE_NAME,
             DBContract.UpdateInfoEntry._ID,
             DBContract.UpdateInfoEntry.COLUMN_USER_ID,

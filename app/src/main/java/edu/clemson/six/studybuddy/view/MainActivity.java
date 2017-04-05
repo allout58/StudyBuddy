@@ -5,9 +5,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -44,8 +41,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,24 +57,6 @@ import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int HANDLE_UPDATE_ALL = 1;
-    public static final int HANDLE_UPDATE_POSITION = 2;
-    // Initialize the Handler to allow non-ui threads to request a recycler-view update
-    public static final Handler updateHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.arg1) {
-                case HANDLE_UPDATE_ALL:
-//                    CarListAdapter.getInstance().notifyDataSetChanged();
-                    break;
-                case HANDLE_UPDATE_POSITION:
-//                    CarListAdapter.getInstance().notifyItemChanged(msg.arg2);
-                    break;
-                default:
-                    Log.e("UpdateHandler", "Invalid argument: " + msg.arg1);
-            }
-        }
-    };
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;
     @InjectView(R.id.car_list)
@@ -153,40 +130,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView.setItemTextColor(csl);
         navView.setItemIconTintList(csl);
 
-        // Setup the RecyclerView
-//        recyclerView.setHasFixedSize(true);
-//
-//        layoutManager = new LinearLayoutManager(this);
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(layoutManager);
-//
-//        recyclerView.setAdapter(CarListAdapter.getInstance());
-
-//        final SwipeHelper callback = new SwipeHelper();
-//        callback.addAdapter(CarListAdapter.getInstance());
-//        callback.addAdapter(this);
-//        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-//        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-//        CarListAdapter.getInstance().setOnStartDragListener(new OnStartDragListener() {
-//            @Override
-//            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-//                itemTouchHelper.startDrag(viewHolder);
-//            }
-//        });
-
         UnifiedDatabaseController.getInstance(this);
 
         // Initialize the database connection
 //        UnifiedDatabaseController.getInstance(this);
 
         // Initialize the database storage saver
-        new Timer("DBUpdateDirty").schedule(new TimerTask() {
-            @Override
-            public void run() {
+//        new Timer("DBUpdateDirty").schedule(new TimerTask() {
+//            @Override
+//            public void run() {
 //                CarController.getInstance().commitDirty();
-            }
-        }, 10000, 10000);
+//            }
+//        }, 10000, 10000);
 
         // Load the database
         //TODO: Turn this into an async task
@@ -311,7 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ConnectionDetails con = APIConnector.setupConnection("user.firebase_login", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
-                SyncController.getInstance().setServerTimeOffset(obj.get("currentTime").getAsInt());
+                long diff = obj.get("currentTime").getAsLong() - System.currentTimeMillis() / 1000;
+                SyncController.getInstance().setServerTimeOffset(diff);
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;

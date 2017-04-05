@@ -31,7 +31,7 @@ public class SyncController {
     private static final String TAG = "SyncController";
 
     private static final SyncController instance = new SyncController();
-    private int serverTimeOffset;
+    private long serverTimeOffset;
 
     private SyncController() {
     }
@@ -80,11 +80,11 @@ public class SyncController {
         }
     }
 
-    public int getServerTimeOffset() {
+    public long getServerTimeOffset() {
         return serverTimeOffset;
     }
 
-    public void setServerTimeOffset(int serverTimeOffset) {
+    public void setServerTimeOffset(long serverTimeOffset) {
         this.serverTimeOffset = serverTimeOffset;
     }
 
@@ -137,6 +137,7 @@ public class SyncController {
         protected Boolean doInBackground(String... params) {
             // Offset the most recent sync time for the remote server
             long sync = UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentSync();
+            Log.d(TAG, String.format("Sync: %d, Offset: %d", sync, serverTimeOffset));
             sync += serverTimeOffset;
 
             Map<String, String> args = new HashMap<>();
