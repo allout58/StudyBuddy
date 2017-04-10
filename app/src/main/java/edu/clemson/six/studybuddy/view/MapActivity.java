@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,6 +32,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     LocationManager locationManager;
     LocationListener locationListener;
     private GoogleMap mMap;
+    boolean inRange = false;
+    int inRangeIndex = -1;
 
     //Manually add locations to the map
     public void populateMapLocations() {
@@ -107,10 +110,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     Location point = new Location("dist");
                             point.setLongitude(LocationController.getInstance().getLocation(i).getLongitude());
                             point.setLatitude(LocationController.getInstance().getLocation(i).getLatitude());
-                    if(location.distanceTo(point)<55)
-                    {
-                        //works but the toast will not go away
-                        //Toast.makeText(getBaseContext(), "Entered Radius", Toast.LENGTH_LONG).show();
+
+                    if(location.distanceTo(point)<LocationController.getInstance().getLocation(i).getRadius()/3.0 && !inRange) {
+                        inRange = true;
+                        inRangeIndex = i;
+                        Toast.makeText(getBaseContext(), "Entered Radius", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    else if(location.distanceTo(point)>LocationController.getInstance().getLocation(i).getRadius()/3.0+10 && inRange && inRangeIndex == i) {
+                        inRange = false;
+                        Toast.makeText(getBaseContext(), "Exited Radius", Toast.LENGTH_LONG).show();
+                        break;
                     }
                 }
             }
