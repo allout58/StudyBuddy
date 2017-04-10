@@ -56,6 +56,10 @@ public class Location {
         return radius;
     }
 
+    public double getMapRadius() {
+        return radius/3.0;
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.ENGLISH, "(%d) %s (lon:%f,lat:%f) Radius %f", locationID, name, longitude, latitude, radius);

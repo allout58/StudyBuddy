@@ -40,7 +40,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         for (int i = 0; i < LocationController.getInstance().size(); i++) {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(LocationController.getInstance().getAllLocations()[i].getLatitude(), LocationController.getInstance().getAllLocations()[i].getLongitude()))
-                    .radius(LocationController.getInstance().getAllLocations()[i].getRadius()/3.0)
+                    .radius(LocationController.getInstance().getAllLocations()[i].getMapRadius())
                     .strokeColor(Color.BLUE));
         }
     }
@@ -98,6 +98,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        populateMapLocations();
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -111,15 +112,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             point.setLongitude(LocationController.getInstance().getLocation(i).getLongitude());
                             point.setLatitude(LocationController.getInstance().getLocation(i).getLatitude());
 
-                    if(location.distanceTo(point)<LocationController.getInstance().getLocation(i).getRadius()/3.0 && !inRange) {
+                    if(location.distanceTo(point)<LocationController.getInstance().getLocation(i).getMapRadius()&& !inRange) {
                         inRange = true;
                         inRangeIndex = i;
-                        Toast.makeText(getBaseContext(), "Entered Radius", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), LocationController.getInstance().getLocation(i).getName() + " Radius Entered", Toast.LENGTH_LONG).show();
                         break;
                     }
-                    else if(location.distanceTo(point)>LocationController.getInstance().getLocation(i).getRadius()/3.0+10 && inRange && inRangeIndex == i) {
+                    else if(location.distanceTo(point)>LocationController.getInstance().getLocation(i).getMapRadius()+15 && inRange && inRangeIndex == i) {
                         inRange = false;
-                        Toast.makeText(getBaseContext(), "Exited Radius", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getBaseContext(), LocationController.getInstance().getLocation(i).getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                         break;
                     }
                 }
@@ -157,6 +158,5 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
             }
         }
-        populateMapLocations();
     }
 }
