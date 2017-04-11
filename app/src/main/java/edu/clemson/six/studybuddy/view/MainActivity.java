@@ -262,7 +262,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
             args.put("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            args.put("imageURL", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+            if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+                args.put("imageURL", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+            }
             ConnectionDetails con = APIConnector.setupConnection("user.firebase_login", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
@@ -279,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         protected void onPostExecute(Boolean result) {
             if (result) {
                 FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-                Log.d("VerifyTask", String.format("Name: %s, Image: %s", u.getDisplayName(), u.getPhotoUrl().toString()));
+                Log.d("VerifyTask", String.format("Name: %s, Image: %s", u.getDisplayName(), u.getPhotoUrl()));
                 textViewUser.setText(u.getDisplayName());
                 Picasso.with(MainActivity.this)
                         .load(u.getPhotoUrl())
