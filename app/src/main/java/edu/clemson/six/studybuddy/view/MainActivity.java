@@ -50,7 +50,7 @@ import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
-import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView.setItemIconTintList(csl);
 
         // Initialize the database connection
-        UnifiedDatabaseController.getInstance(this);
+        LocalDatabaseController.getInstance(this);
 
 
         // Initialize the database storage saver
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        UnifiedDatabaseController.getInstance(null).close();
+        LocalDatabaseController.getInstance(this).close();
         super.onDestroy();
     }
 
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                 });
-                UnifiedDatabaseController.getInstance(null).getLocal().clearFriendsAndRequests();
+                LocalDatabaseController.getInstance(null).clearFriendsAndRequests();
                 SyncController.getInstance().syncFriends(null);
             }
         }

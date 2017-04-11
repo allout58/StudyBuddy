@@ -19,7 +19,7 @@ import java.util.Map;
 
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
-import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
@@ -66,7 +66,7 @@ public class SyncController {
     }
 
     public void beginSync() {
-        if (UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentUserID() != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
+        if (LocalDatabaseController.getInstance(null).getMostRecentUserID() != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
             // Do first time download
             Log.d(TAG, "Initial synchronization for user");
 //            UnifiedDatabaseController.getInstance(null).getLocal().clearCars();
@@ -127,7 +127,7 @@ public class SyncController {
                             elO.get("realName").getAsString(),
                             loc, sl, blurb, date, true);
                     Log.d(TAG, "Friend " + friend.getName() + " " + friend.getUid());
-                    UnifiedDatabaseController.getInstance(null).getLocal().syncFriend(friend);
+                    LocalDatabaseController.getInstance(null).syncFriend(friend);
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("my_requests").getAsJsonArray()) {
                     JsonObject elO = el.getAsJsonObject();
@@ -137,7 +137,7 @@ public class SyncController {
                             elO.get("realName").getAsString(),
                             null, null, "", null, false);
                     Log.d(TAG, "My Request " + friend.getName() + " " + friend.getUid());
-                    UnifiedDatabaseController.getInstance(null).getLocal().syncRequest(friend, true);
+                    LocalDatabaseController.getInstance(null).syncRequest(friend, true);
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("their_requests").getAsJsonArray()) {
                     JsonObject elO = el.getAsJsonObject();
@@ -147,7 +147,7 @@ public class SyncController {
                             elO.get("realName").getAsString(),
                             null, null, "", null, false);
                     Log.d(TAG, "Their Request " + friend.getName() + " " + friend.getUid());
-                    UnifiedDatabaseController.getInstance(null).getLocal().syncRequest(friend, false);
+                    LocalDatabaseController.getInstance(null).syncRequest(friend, false);
                 }
                 FriendController.getInstance().reload();
             } catch (IOException e) {
@@ -178,7 +178,7 @@ public class SyncController {
         @Override
         protected Boolean doInBackground(String... params) {
             // Offset the most recent sync time for the remote server
-            long sync = UnifiedDatabaseController.getInstance(null).getLocal().getMostRecentSync();
+            long sync = LocalDatabaseController.getInstance(null).getMostRecentSync();
             Log.d(TAG, String.format("Sync: %d, Offset: %d", sync, serverTimeOffset));
             sync += serverTimeOffset;
 
@@ -198,7 +198,7 @@ public class SyncController {
                 for (JsonElement el : obj.getAsJsonObject().get("locations").getAsJsonArray()) {
                     JsonObject o = el.getAsJsonObject();
                     l = gson.fromJson(o, Location.class);
-                    UnifiedDatabaseController.getInstance(null).getLocal().syncLocation(l);
+                    LocalDatabaseController.getInstance(null).syncLocation(l);
                 }
                 LocationController.getInstance().reload();
                 for (JsonElement el : obj.getAsJsonObject().get("sublocations").getAsJsonArray()) {
@@ -206,10 +206,10 @@ public class SyncController {
                     Location loc = LocationController.getInstance().getLocation(o.get("locationID").getAsInt());
                     sl = new SubLocation(o.get("subID").getAsInt(), o.get("name").getAsString(), loc);
                     loc.addSubLocation(sl);
-                    UnifiedDatabaseController.getInstance(null).getLocal().syncSubLocation(sl);
+                    LocalDatabaseController.getInstance(null).syncSubLocation(sl);
                 }
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentSync(System.currentTimeMillis() / 1000);
-                UnifiedDatabaseController.getInstance(null).getLocal().setMostRecentUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                LocalDatabaseController.getInstance(null).setMostRecentSync(System.currentTimeMillis() / 1000);
+                LocalDatabaseController.getInstance(null).setMostRecentUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 Log.d(TAG, "Locations Synchronized");
                 return true;
             } catch (IOException e) {

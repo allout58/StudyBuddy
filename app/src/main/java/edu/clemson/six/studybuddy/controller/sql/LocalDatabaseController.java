@@ -23,11 +23,18 @@ import edu.clemson.six.studybuddy.model.SubLocation;
 public class LocalDatabaseController extends DatabaseController {
 
     private static final String TAG = "LocalDB";
-
+    private static LocalDatabaseController instance;
     final DbHelper dbHelper;
 
-    public LocalDatabaseController(Context context) {
+    private LocalDatabaseController(Context context) {
         this.dbHelper = new DbHelper(context);
+    }
+
+    public static LocalDatabaseController getInstance(Context context) {
+        if (instance == null) {
+            instance = new LocalDatabaseController(context.getApplicationContext());
+        }
+        return instance;
     }
 
     @Override

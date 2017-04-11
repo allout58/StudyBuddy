@@ -18,7 +18,7 @@ import java.util.Map;
 
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
-import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Friend;
 
 /**
@@ -124,15 +124,15 @@ public class FriendController {
         friends.clear();
         myRequests.clear();
         requests.clear();
-        for (Friend f : UnifiedDatabaseController.getInstance(null).getFriends()) {
+        for (Friend f : LocalDatabaseController.getInstance(null).getFriends()) {
             friendMap.put(f.getUid(), f);
             friends.add(f);
         }
-        for (Friend f : UnifiedDatabaseController.getInstance(null).getLocal().getRequests()) {
+        for (Friend f : LocalDatabaseController.getInstance(null).getRequests()) {
             friendMap.put(f.getUid(), f);
             requests.add(f);
         }
-        for (Friend f : UnifiedDatabaseController.getInstance(null).getLocal().getMyRequests()) {
+        for (Friend f : LocalDatabaseController.getInstance(null).getMyRequests()) {
             friendMap.put(f.getUid(), f);
             myRequests.add(f);
         }

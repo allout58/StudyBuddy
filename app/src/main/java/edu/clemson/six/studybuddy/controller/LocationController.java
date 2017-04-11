@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 
 /**
@@ -63,7 +63,7 @@ public class LocationController {
         locationIDMap.clear();
         locations = null;
         // Grab locations from the DB
-        List<Location> l = UnifiedDatabaseController.getInstance(null).getLocations();
+        List<Location> l = LocalDatabaseController.getInstance(null).getLocations();
         for (Location loc : l) {
             locationMap.put(loc.getName(), loc);
             locationIDMap.put(loc.getId(), loc);
