@@ -2,33 +2,19 @@
     <string name="app_name">StudyBuddy</string>
 
     <string name="text_main">Click an item to edit it or the button to add an item.</string>
-    <string name="text_main_trash">Swipe an item to undelete it.</string>
     <!--Action bar labels-->
     <string name="action_settings">Settings</string>
     <string name="action_info">Information</string>
-    <string name="action_undo">Undo</string>
     <string name="action_logout">Logout</string>
 
-    <string name="edit_mode">Edit Mode</string>
-
     <!--Hints/Labels-->
-    <string name="hint_model">Model</string>
-    <string name="hint_owner">Owner</string>
-    <string name="hint_make">Make</string>
-    <string name="hint_license">License</string>
-    <string name="hint_state">State</string>
-    <string name="hint_color">Color</string>
-    <string name="hint_year">Year</string>
-
+    <string name="hint_name">Name</string>
     <!--Buttons-->
     <string name="btn_save">Save</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_add">Add</string>
     <string name="btn_ok">OK</string>
 
-    <!--Alerts-->
-    <string name="alert_cancel">Are you sure you wish to cancel?</string>
-    <string name="alert_delete">Car deleted</string>
 
     <!--Activity Titles-->
     <string name="title_activity_information">Information</string>
@@ -71,18 +57,6 @@ StackOverflow - Multiple small problems\n
 <a href="http://square.github.io/picasso/">Picasso</a> image utility library\n
 </string>
 
-    <!-- Strings related to login -->
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="login">Login</string>
-    <string name="hint_username">Username</string>
-    <string name="hint_password">Password</string>
-    <string name="error_bad_login">Invalid login, please try again!</string>
-    <string name="title_activity_pre_def_login">Sign in</string>
-    <string name="error_bad_connection">Unable to connect to login server. Please try again</string>
-    <string name="error_bad_token">Please login!</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -151,7 +125,7 @@ StackOverflow - Multiple small problems\n
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value" />
+    <string-array name="multi_select_list_preference_default_value"/>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 

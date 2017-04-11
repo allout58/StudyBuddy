@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void launchFirebaseAuthUI() {
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
                 .setLogo(R.mipmap.ic_launcher)
-                .setTheme(R.style.AppTheme)
+                .setTheme(R.style.LoginTheme)
                 .setProviders(Arrays.asList(
                         new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
