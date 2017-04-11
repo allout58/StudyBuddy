@@ -130,10 +130,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView.setItemTextColor(csl);
         navView.setItemIconTintList(csl);
 
+        // Initialize the database connection
         UnifiedDatabaseController.getInstance(this);
 
-        // Initialize the database connection
-//        UnifiedDatabaseController.getInstance(this);
 
         // Initialize the database storage saver
 //        new Timer("DBUpdateDirty").schedule(new TimerTask() {
@@ -303,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                 });
+                UnifiedDatabaseController.getInstance(null).getLocal().clearFriendsAndRequests();
+                SyncController.getInstance().syncFriends(null);
             }
         }
     }

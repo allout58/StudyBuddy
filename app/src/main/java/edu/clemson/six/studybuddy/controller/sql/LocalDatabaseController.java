@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
@@ -62,9 +64,85 @@ public class LocalDatabaseController extends DatabaseController {
         c.close();
     }
 
+    public List<Friend> getRequests() {
+        List<Friend> l = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor c = db.query(DBContract.FriendsRequestsContract.TABLE_NAME, DBContract.FriendsRequestsContract.COLUMNS_ALL, DBContract.FriendsRequestsContract.COLUMN_IS_MINE + " = 0", null, null, null, null);
+        while (c.moveToNext()) {
+            try {
+                Friend friend = new Friend(
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_UID)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_IMAGE_URL)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_NAME)),
+                        null,
+                        null,
+                        "",
+                        null,
+                        false);
+                l.add(friend);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to get friend request from db", e);
+            }
+        }
+        c.close();
+        return l;
+    }
+
+    public List<Friend> getMyRequests() {
+        List<Friend> l = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor c = db.query(DBContract.FriendsRequestsContract.TABLE_NAME, DBContract.FriendsRequestsContract.COLUMNS_ALL, DBContract.FriendsRequestsContract.COLUMN_IS_MINE + " = 1", null, null, null, null);
+        while (c.moveToNext()) {
+            try {
+                Friend friend = new Friend(
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_UID)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_IMAGE_URL)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsRequestsContract.COLUMN_NAME)),
+                        null,
+                        null,
+                        "",
+                        null,
+                        false);
+                l.add(friend);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to get friend request from db", e);
+            }
+        }
+        c.close();
+        return l;
+    }
+
+
     @Override
     public List<Friend> getFriends() {
-        return null;
+        List<Friend> l = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.query(DBContract.FriendsContract.TABLE_NAME, DBContract.FriendsContract.COLUMNS_ALL, "", null, null, null, null);
+        while (c.moveToNext()) {
+            try {
+                Location loc = LocationController.getInstance().getLocationById(c.getInt(c.getColumnIndex(DBContract.FriendsContract.COLUMN_LOCATION)));
+                SubLocation sl = null;
+                if (loc != null) {
+                    sl = loc.getSubLocationByID(c.getInt(c.getColumnIndex(DBContract.FriendsContract.COLUMN_SUBLOCATION)));
+                }
+                Friend friend = new Friend(
+                        c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_UID)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_IMAGE_URL)),
+                        c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_NAME)),
+                        loc,
+                        sl,
+                        c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_BLURB)),
+                        new Date(c.getLong(c.getColumnIndex(DBContract.FriendsContract.COLUMN_END_TIME))),
+                        true);
+                l.add(friend);
+            } catch (SQLException e) {
+                Log.e(TAG, "Unable to get friends from db", e);
+            }
+        }
+        c.close();
+        return l;
     }
 
     @Override
@@ -177,9 +255,11 @@ public class LocalDatabaseController extends DatabaseController {
         cv.put(DBContract.FriendsContract.COLUMN_IMAGE_URL, f.getImageURL());
         cv.put(DBContract.FriendsContract.COLUMN_NAME, f.getName());
         cv.put(DBContract.FriendsContract.COLUMN_LOCATION, f.getLocation().getId());
-        cv.put(DBContract.FriendsContract.COLUMN_SUBLOCATION, f.getSubLocation().getId());
+        if (f.getSubLocation() != null) {
+            cv.put(DBContract.FriendsContract.COLUMN_SUBLOCATION, f.getSubLocation().getId());
+        }
         cv.put(DBContract.FriendsContract.COLUMN_BLURB, f.getBlurb());
-        cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().toString());
+        cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().getTime());
 
         try {
             db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
@@ -199,12 +279,28 @@ public class LocalDatabaseController extends DatabaseController {
         cv.put(DBContract.FriendsRequestsContract.COLUMN_NAME, f.getName());
         cv.put(DBContract.FriendsRequestsContract.COLUMN_IS_MINE, isMine);
         try {
-            db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
+            db.insertOrThrow(DBContract.FriendsRequestsContract.TABLE_NAME, null, cv);
         } catch (SQLException e) {
-            String selection = DBContract.FriendsContract.COLUMN_UID + " = ?";
+            String selection = DBContract.FriendsRequestsContract.COLUMN_UID + " = ?";
             String[] args = {String.valueOf(f.getUid())};
-            cv.remove(DBContract.FriendsContract.COLUMN_UID);
-            db.update(DBContract.FriendsContract.TABLE_NAME, cv, selection, args);
+            cv.remove(DBContract.FriendsRequestsContract.COLUMN_UID);
+            db.update(DBContract.FriendsRequestsContract.TABLE_NAME, cv, selection, args);
         }
+    }
+
+    public void clearFriendsAndRequests() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + DBContract.FriendsContract.TABLE_NAME);
+        db.execSQL("DELETE FROM " + DBContract.FriendsRequestsContract.TABLE_NAME);
+    }
+
+    public void removeFriend(Friend f) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DBContract.FriendsContract.TABLE_NAME, DBContract.FriendsContract.COLUMN_UID + " = ?", new String[]{f.getUid()});
+    }
+
+    public void removeRequest(Friend f) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DBContract.FriendsRequestsContract.TABLE_NAME, DBContract.FriendsRequestsContract.COLUMN_UID + " = ?", new String[]{f.getUid()});
     }
 }

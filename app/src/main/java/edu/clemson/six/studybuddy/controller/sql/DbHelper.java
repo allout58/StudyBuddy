@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "StudyBuddy.db";
 
     private static final String SQL_CREATE_LOC = String.format("CREATE TABLE %s (" +
@@ -45,7 +45,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     "%s INTEGER," +
                     "%s INTEGER," +
                     "%s TEXT," +
-                    "%s TIME" +
+                    "%s INTEGER" +
                     ")",
             DBContract.FriendsContract.TABLE_NAME,
             DBContract.FriendsContract.COLUMN_UID,
@@ -68,7 +68,7 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
 
     private static final String SQL_CREATE_FRIEND_REQUEST = String.format("CREATE TABLE %s (" +
-                    "%s VARCHAR(64)," +
+                    "%s VARCHAR(64) UNIQUE," +
                     "%s VARCHAR(60)," +
                     "%s VARCHAR(200)," +
                     "%s INTEGER" +

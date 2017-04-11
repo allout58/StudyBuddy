@@ -35,7 +35,7 @@ public class UnifiedDatabaseController extends DatabaseController {
 
     @Override
     public List<Friend> getFriends() {
-        return null;
+        return local.getFriends();
     }
 
     @Override

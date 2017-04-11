@@ -18,6 +18,7 @@ import java.util.Map;
 
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
+import edu.clemson.six.studybuddy.controller.sql.UnifiedDatabaseController;
 import edu.clemson.six.studybuddy.model.Friend;
 
 /**
@@ -42,48 +43,102 @@ public class FriendController {
         return instance;
     }
 
+    /**
+     * Get a friend (or request) by their Firebase UID
+     *
+     * @param uid Firebase UID
+     * @return Friend with given UID
+     */
     public Friend getFriend(String uid) {
         return friendMap.get(uid);
     }
 
+    /**
+     * Get all confirmed friends
+     *
+     * @return
+     */
     public Friend[] getFriends() {
         Friend[] f = new Friend[friends.size()];
         friends.toArray(f);
         return f;
     }
 
-    public Friend[] getRequest() {
-        Friend[] f = new Friend[friends.size()];
+    /**
+     * Get all friends who have requested the logged in user
+     *
+     * @return
+     */
+    public Friend[] getRequests() {
+        Friend[] f = new Friend[requests.size()];
         requests.toArray(f);
         return f;
     }
 
-    public Friend[] getMyRequest() {
-        Friend[] f = new Friend[friends.size()];
+    /**
+     * Get all friends the logged in user has requested
+     *
+     * @return
+     */
+    public Friend[] getMyRequests() {
+        Friend[] f = new Friend[myRequests.size()];
         myRequests.toArray(f);
         return f;
     }
 
-    public void addFriend(final Friend f) {
-        Log.d(TAG, "Adding friend " + f.getName());
+    public int getFriendsCount() {
+        return friends.size();
+    }
+
+    public int getRequestsCount() {
+        return requests.size();
+    }
+
+    public int getMyRequestsCount() {
+        return myRequests.size();
+    }
+
+//    public void addFriend(Friend f) {
+//        friendMap.put(f.getUid(), f);
+//        friends.add(f);
+//    }
+//
+//    public void addRequest(Friend f) {
+//        friendMap.put()
+//    }
+
+    public void newFriend(final Friend f) {
+        Log.d(TAG, "Adding new friend " + f.getName());
         FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
-                AddFriendTask t = new AddFriendTask();
+                NewFriendTask t = new NewFriendTask();
                 t.execute(task.getResult().getToken(), f.getUid());
             }
         });
     }
+
 
     public void reload() {
         friendMap.clear();
         friends.clear();
         myRequests.clear();
         requests.clear();
-        //TODO Reload from DB
+        for (Friend f : UnifiedDatabaseController.getInstance(null).getFriends()) {
+            friendMap.put(f.getUid(), f);
+            friends.add(f);
+        }
+        for (Friend f : UnifiedDatabaseController.getInstance(null).getLocal().getRequests()) {
+            friendMap.put(f.getUid(), f);
+            requests.add(f);
+        }
+        for (Friend f : UnifiedDatabaseController.getInstance(null).getLocal().getMyRequests()) {
+            friendMap.put(f.getUid(), f);
+            myRequests.add(f);
+        }
     }
 
-    private class AddFriendTask extends AsyncTask<String, Void, Boolean> {
+    private class NewFriendTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(String... params) {

@@ -41,11 +41,11 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
     public int getItemCount(int section) {
         switch (section) {
             case SECTION_NEAR:
-                return 1;
+                return 0;
             case SECTION_OTHER:
-                return 5;
+                return FriendController.getInstance().getFriendsCount();
             case SECTION_REQUEST:
-                return 1;
+                return FriendController.getInstance().getMyRequestsCount();
         }
         return 0;
     }
@@ -74,7 +74,18 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
         Calendar c = Calendar.getInstance();
         c.set(2017, 3, 29, 17, 18);
 //        https://lh6.googleusercontent.com/-wvYp75r5oeA/AAAAAAAAAAI/AAAAAAAAAQs/imhoKGVc7Jw/s96-c/photo.jpg
-        Friend f = new Friend("00001", "https://lh6.googleusercontent.com/-wvYp75r5oeA/AAAAAAAAAAI/AAAAAAAAAQs/imhoKGVc7Jw/s96-c/photo.jpg", "Jimmy John", w, SubLocation.OTHER, "Bla", c.getTime(), true);
+        Friend fTemp = new Friend("00001", "https://lh6.googleusercontent.com/-wvYp75r5oeA/AAAAAAAAAAI/AAAAAAAAAQs/imhoKGVc7Jw/s96-c/photo.jpg", "Jimmy John", w, SubLocation.OTHER, "Bla", c.getTime(), true);
+        Friend f;
+        switch (section) {
+            case SECTION_OTHER:
+                f = FriendController.getInstance().getFriends()[relativePosition];
+                break;
+            case SECTION_REQUEST:
+                f = FriendController.getInstance().getMyRequests()[relativePosition];
+                break;
+            default:
+                f = fTemp;
+        }
         holder.binding.setFriend(f);
         ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         if (!f.getImageURL().isEmpty())

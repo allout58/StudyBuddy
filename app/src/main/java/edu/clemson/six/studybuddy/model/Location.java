@@ -34,6 +34,21 @@ public class Location {
         return name;
     }
 
+    /**
+     * Get a sublocation by it's id
+     *
+     * @param id ID of sublocation to find
+     * @return The sublocation object, or null if not found;
+     */
+    public SubLocation getSubLocationByID(int id) {
+        for (int i = 0; i < sublocations.size(); i++) {
+            if (sublocations.get(i).getId() == id) {
+                return sublocations.get(i);
+            }
+        }
+        return null;
+    }
+
     public SubLocation[] getSublocations() {
         SubLocation[] ret = new SubLocation[sublocations.size()];
         sublocations.toArray(ret);

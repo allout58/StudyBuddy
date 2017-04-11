@@ -11,6 +11,7 @@ import edu.clemson.six.studybuddy.model.Location;
 
 public class RemoteDatabaseController extends DatabaseController {
 
+    // TODO: Refactor this out... It isn't really needed with this setup
     @Override
     public List<Location> getLocations() {
         return null;

@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,13 +53,13 @@ public class SyncController {
         });
     }
 
-    public void refreshLocations(final Runnable callback) {
-        Log.d(TAG, "Refreshing content");
+    public void syncFriends(final Runnable r) {
+        Log.d(TAG, "Synchronizing friends");
         FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
             public void onComplete(@NonNull Task<GetTokenResult> task) {
-                LocSyncTask t = new LocSyncTask();
-                t.setCallback(callback);
+                FriendSyncTask t = new FriendSyncTask();
+                t.setCallback(r);
                 t.execute(task.getResult().getToken());
             }
         });
@@ -106,12 +107,53 @@ public class SyncController {
                     return false;
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("connected").getAsJsonArray()) {
-
+                    JsonObject elO = el.getAsJsonObject();
+                    Location loc = LocationController.getInstance().getLocationById(elO.get("locationID").getAsInt());
+                    SubLocation sl = null;
+                    if (loc != null && !elO.get("subID").isJsonNull()) {
+                        sl = loc.getSubLocationByID(elO.get("subID").getAsInt());
+                    }
+                    String blurb = "";
+                    if (!elO.get("blurb").isJsonNull()) {
+                        blurb = elO.get("blurb").getAsString();
+                    }
+                    Date date = null;
+                    if (!elO.get("endTime").isJsonNull()) {
+                        date = new Date(elO.get("endTime").getAsLong());
+                    }
+                    friend = new Friend(
+                            elO.get("firebase_uid").getAsString(),
+                            elO.get("imageURL").getAsString(),
+                            elO.get("realName").getAsString(),
+                            loc, sl, blurb, date, true);
+                    Log.d(TAG, "Friend " + friend.getName() + " " + friend.getUid());
+                    UnifiedDatabaseController.getInstance(null).getLocal().syncFriend(friend);
                 }
+                for (JsonElement el : obj.getAsJsonObject().get("my_requests").getAsJsonArray()) {
+                    JsonObject elO = el.getAsJsonObject();
+                    friend = new Friend(
+                            elO.get("firebase_uid").getAsString(),
+                            elO.get("imageURL").getAsString(),
+                            elO.get("realName").getAsString(),
+                            null, null, "", null, false);
+                    Log.d(TAG, "My Request " + friend.getName() + " " + friend.getUid());
+                    UnifiedDatabaseController.getInstance(null).getLocal().syncRequest(friend, true);
+                }
+                for (JsonElement el : obj.getAsJsonObject().get("their_requests").getAsJsonArray()) {
+                    JsonObject elO = el.getAsJsonObject();
+                    friend = new Friend(
+                            elO.get("firebase_uid").getAsString(),
+                            elO.get("imageURL").getAsString(),
+                            elO.get("realName").getAsString(),
+                            null, null, "", null, false);
+                    Log.d(TAG, "Their Request " + friend.getName() + " " + friend.getUid());
+                    UnifiedDatabaseController.getInstance(null).getLocal().syncRequest(friend, false);
+                }
+                FriendController.getInstance().reload();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return true;
         }
 
         @Override

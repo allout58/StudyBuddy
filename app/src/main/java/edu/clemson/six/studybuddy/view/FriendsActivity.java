@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendsListAdapter;
+import edu.clemson.six.studybuddy.controller.SyncController;
 
 public class FriendsActivity extends AppCompatActivity {
 
@@ -45,7 +46,14 @@ public class FriendsActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeContainer.setRefreshing(false);
+                SyncController.getInstance().syncFriends(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeContainer.setRefreshing(false);
+                        FriendsListAdapter.getInstance().notifyDataSetChanged();
+                    }
+                });
+
             }
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
