@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,9 +32,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     LocationManager locationManager;
     LocationListener locationListener;
-    private GoogleMap mMap;
     boolean inRange = false;
     int inRangeIndex = -1;
+    private GoogleMap mMap;
 
     //Manually add locations to the map
     public void populateMapLocations() {
@@ -143,7 +144,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         };
 
         if (Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            } catch (SecurityException e) {
+                Log.e("MapActivity", "Error getting position", e);
+            }
         }
         else {
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
