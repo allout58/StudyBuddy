@@ -131,9 +131,13 @@ public class SyncController {
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("my_requests").getAsJsonArray()) {
                     JsonObject elO = el.getAsJsonObject();
+                    String url = "";
+                    if (!elO.get("imageURL").isJsonNull()) {
+                        url = elO.get("imageURL").getAsString();
+                    }
                     friend = new Friend(
                             elO.get("firebase_uid").getAsString(),
-                            elO.get("imageURL").getAsString(),
+                            url,
                             elO.get("realName").getAsString(),
                             null, null, "", null, false);
                     Log.d(TAG, "My Request " + friend.getName() + " " + friend.getUid());
@@ -141,9 +145,13 @@ public class SyncController {
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("their_requests").getAsJsonArray()) {
                     JsonObject elO = el.getAsJsonObject();
+                    String url = "";
+                    if (!elO.get("imageURL").isJsonNull()) {
+                        url = elO.get("imageURL").getAsString();
+                    }
                     friend = new Friend(
                             elO.get("firebase_uid").getAsString(),
-                            elO.get("imageURL").getAsString(),
+                            url,
                             elO.get("realName").getAsString(),
                             null, null, "", null, false);
                     Log.d(TAG, "Their Request " + friend.getName() + " " + friend.getUid());
