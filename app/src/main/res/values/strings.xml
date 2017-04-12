@@ -27,19 +27,20 @@
     <string name="acknowledgements"><b>StudyBuddy v1.0</b>\n
 <b>Created By:</b>\n
 James Hollowell &lt;jthollo@clemson.edu&gt;\n
+        Connor Kinzie &lt;ckinzie@clemson.edu&gt;\n
 Created for the Spring 2017 section of CPSC 4820\n\n
 <b>Information</b>\n\n
-This application is designed to keep an inventory of vehicles\' basic information, with plans for expansion in the future.\n
- - To add a vehicle, tap the add button.\n
- - To edit a vehicle, tap it\'s entry in the list, and toggle edit mode in the top right corner.\n
- - To reorder the list, simply long press and drag the vehicle, or tap and drag the handle on the vehicle.\n
- - To delete a vehicle, swipe it off the list. This sends it to the trashcan, where you can later restore it.\n\n
-When using either the add or edit activities, the save button only appears when changes occur. Additionally, making changes forces the cancel button to require additional confirmation.\n\n
-
-<b>What\'s new</b>\n\n
-This application uses Android\'s DataBinding library to simplify some code with the UI. It also uses a SQLite database to store the information. The design should also allow for rotation by utilizing the scrolling. Finally, the app implements gestures for interacting with the RecyclerView.\n
-This application also uses an external database and external web application to facilitate users moving between a web and multiple phones.\n\n
-
+The purpose of this application is to help college students find friends to study with on Clemson\’s campus,
+        but hopefully more locations will be available as the app becomes more robust. The app will begin by
+        allowing a user to make a list of friends by searching for their friends\’ usernames in a search bar.
+         Once both parties have agreed to become friends, they can begin sharing locations. Using GPS tracking,
+        the app will detect when a user stops by a given building and ask the user whether or not they want to
+        share their location with their friends. It will also prompt the user to enter a more exact location
+        than GPS allows, such as the 5th floor of Cooper by Starbucks. Then it will display a list of friends
+        at that location, along with details such as their more specific location and how long they will be
+        there. At any time, a user can search for the location of their friends, but when they walk within range
+        of a typical study spot, the app will actively ask if they wish to find friends. The Study Buddy helps
+        students find friend to make the whole study experience much more enjoyable.
 <b>Acknowledgements</b>\n\n
 StackOverflow - Multiple small problems\n
 <a href="https://developer.android.com/guide/index.html">Android Developer Site</a> - Tutorials and API documentation\n
