@@ -261,12 +261,16 @@ public class LocalDatabaseController extends DatabaseController {
         cv.put(DBContract.FriendsContract.COLUMN_UID, f.getUid());
         cv.put(DBContract.FriendsContract.COLUMN_IMAGE_URL, f.getImageURL());
         cv.put(DBContract.FriendsContract.COLUMN_NAME, f.getName());
-        cv.put(DBContract.FriendsContract.COLUMN_LOCATION, f.getLocation().getId());
+        if (f.getLocation() != null) {
+            cv.put(DBContract.FriendsContract.COLUMN_LOCATION, f.getLocation().getId());
+        }
         if (f.getSubLocation() != null) {
             cv.put(DBContract.FriendsContract.COLUMN_SUBLOCATION, f.getSubLocation().getId());
         }
         cv.put(DBContract.FriendsContract.COLUMN_BLURB, f.getBlurb());
-        cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().getTime());
+        if (f.getEndTime() != null) {
+            cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().getTime());
+        }
 
         try {
             db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);

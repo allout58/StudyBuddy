@@ -26,8 +26,8 @@
 
     <string name="acknowledgements"><b>StudyBuddy v1.0</b>\n
 <b>Created By:</b>\n
-James Hollowell &lt;jthollo@clemson.edu&gt;\n
-        Connor Kinzie &lt;ckinzie@clemson.edu&gt;\n
+James Hollowell \n &lt;jthollo@clemson.edu&gt;\n
+Connor Kinzie\n &lt;ckinzie@clemson.edu&gt;\n
 Created for the Spring 2017 section of CPSC 4820\n\n
 <b>Information</b>\n\n
 The purpose of this application is to help college students find friends to study with on Clemson\’s campus,
@@ -40,7 +40,7 @@ The purpose of this application is to help college students find friends to stud
         at that location, along with details such as their more specific location and how long they will be
         there. At any time, a user can search for the location of their friends, but when they walk within range
         of a typical study spot, the app will actively ask if they wish to find friends. The Study Buddy helps
-        students find friend to make the whole study experience much more enjoyable.
+        students find friend to make the whole study experience much more enjoyable.\n\n
 <b>Acknowledgements</b>\n\n
 StackOverflow - Multiple small problems\n
 <a href="https://developer.android.com/guide/index.html">Android Developer Site</a> - Tutorials and API documentation\n
