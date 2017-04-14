@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             launchFirebaseAuthUI();
         }
 
+        String fbIIDToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("FBIIDTOKEN", (fbIIDToken != null) ? fbIIDToken : "None!");
 
         // Setup the Drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
