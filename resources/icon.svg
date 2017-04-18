@@ -1,0 +1,51 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" height="48" version="1.1"
+    width="48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient gradientUnits="userSpaceOnUse" id="color-1" x1="11.67152" x2="44.35889"
+            y1="11.67152" y2="44.35889">
+            <stop offset="0" stop-color="#000000" stop-opacity="0.22"></stop>
+            <stop offset="1" stop-color="#000000" stop-opacity="0"></stop>
+        </linearGradient>
+        <filter id="dropshadow-base">
+            <feColorMatrix type="matrix"
+                values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .8 0"></feColorMatrix>
+            <feOffset dx="0" dy="1"></feOffset>
+            <feGaussianBlur stdDeviation="1"></feGaussianBlur>
+            <feComposite in="SourceGraphic"></feComposite>
+        </filter>
+        <filter height="130%" id="dropshadow-banner" width="120%" x="-10%" y="-10%">
+            <feColorMatrix type="matrix"
+                values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .4 0"></feColorMatrix>
+            <feOffset dx="0" dy="1"></feOffset>
+            <feGaussianBlur stdDeviation="0.5"></feGaussianBlur>
+            <feComposite in="SourceGraphic"></feComposite>
+        </filter>
+    </defs>
+    <g style="mix-blend-mode: normal" fill="none" fill-rule="nonzero" font-family="none" font-size="none"
+        font-weight="none" stroke="none" stroke-dasharray="" stroke-dashoffset="0"
+        stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-width="none"
+        text-anchor="none">
+        <path
+            d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
+            fill="#512da8" id="base 1 5" stroke-width="1"></path>
+        <path
+            d="M22.16762,44.35889c-0.68115,0 -1.29757,-0.27585 -1.74371,-0.72199l-8.03041,-8.03041c-0.44614,-0.44614 -0.72199,-1.06256 -0.72199,-1.74371v-17.25987h2.4657l6.16424,6.16424v-2.4657l2.4657,0l-6.16424,-6.16424c0,-1.3623 1.1034,-2.4657 2.4657,-2.4657h14.79418c0.68115,0 1.29757,0.27585 1.74371,0.72199l8.03041,8.03041c0,0 0,0 0,0c0.44614,0.44614 0.72199,1.06256 0.72199,1.74371l0,10.18523c-0.89107,2.16956 -2.11886,4.16524 -3.61832,5.92202l-5.01161,-5.01161v2.4657h-2.4657l5.01161,5.01161c-1.75678,1.49946 -3.75246,2.72725 -5.92202,3.61832zM35.47481,30.79756h-2.21156l0.59953,0.59953c0.61643,0 1.17986,-0.22592 1.61203,-0.59953zM22.16762,24.63332l0,0.59953h0.59953zM22.16762,33.86279h4.29807l-4.29807,-4.29807z"
+            fill="url(#color-1)" stroke-width="1"></path>
+        <path
+            d="M14.13721,16.60291h-2.4657v17.25987c0,1.3623 1.1034,2.4657 2.4657,2.4657h17.25987v-2.4657h-17.25987zM33.86279,11.67152h-14.79418c-1.3623,0 -2.4657,1.1034 -2.4657,2.4657v14.79418c0,1.3623 1.1034,2.4657 2.4657,2.4657h14.79418c1.3623,0 2.4657,-1.1034 2.4657,-2.4657v-14.79418c0,-1.3623 -1.1034,-2.4657 -2.4657,-2.4657zM32.62994,22.76715h-12.32848v-2.4657h12.32848zM27.69854,27.69854h-7.39709v-2.4657h7.39709zM32.62994,17.83576h-12.32848v-2.4657h12.32848z"
+            fill="none" stroke-width="0"></path>
+        <path
+            d="M14.13721,33.86279h17.25987v2.4657h-17.25987c-1.3623,0 -2.4657,-1.1034 -2.4657,-2.4657v-17.25987h2.4657zM36.32848,14.13721v14.79418c0,1.3623 -1.1034,2.4657 -2.4657,2.4657h-14.79418c-1.3623,0 -2.4657,-1.1034 -2.4657,-2.4657v-14.79418c0,-1.3623 1.1034,-2.4657 2.4657,-2.4657h14.79418c1.3623,0 2.4657,1.1034 2.4657,2.4657zM32.62994,20.30146h-12.32848v2.4657h12.32848zM27.69854,25.23285h-7.39709v2.4657h7.39709zM32.62994,15.37006h-12.32848v2.4657h12.32848z"
+            fill="#ffffff" stroke-width="0"></path>
+        <path
+            d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
+            fill="none" id="base 1 1 1" stroke-width="1"></path>
+        <g fill="#000000" font-family="Roboto, sans-serif" font-size="14" font-weight="normal"
+            stroke-width="1" text-anchor="start"></g>
+        <rect fill="none" height="22" stroke-width="1" width="44" x="2" y="2"></rect>
+        <path d="M2,24v-22h44v22z" fill="none" stroke-width="1"></path>
+        <path d="M2,24v-22h44v22z" fill="none" stroke-width="1"></path>
+        <path d="M2,24v-22h44v22z" fill="none" stroke-width="1"></path>
+        <path d="M2,24v-22h44v22z" fill="none" stroke-width="1"></path>
+    </g>
+</svg>
