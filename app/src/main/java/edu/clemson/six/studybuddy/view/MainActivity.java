@@ -34,7 +34,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -95,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         textViewUser = (TextView) v.findViewById(R.id.textViewUser);
         imageViewUser = (ImageView) v.findViewById(R.id.imageViewUser);
 
+        // Check firebase authorization
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Snackbar.make(mainCoordinator, "Already logged in", Snackbar.LENGTH_LONG).show();
@@ -112,9 +112,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             launchFirebaseAuthUI();
         }
-
-        String fbIIDToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("FBIIDTOKEN", (fbIIDToken != null) ? fbIIDToken : "None!");
 
         // Setup the Drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,23 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Initialize the database connection
         LocalDatabaseController.getInstance(this);
 
-
-        // Initialize the database storage saver
-//        new Timer("DBUpdateDirty").schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                CarController.getInstance().commitDirty();
-//            }
-//        }, 10000, 10000);
-
-        // Load the database
-        //TODO: Turn this into an async task
-//        new Timer("DBInitLoad").schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                CarController.getInstance().reload();
-//            }
-//        }, 0);
     }
 
 
@@ -205,14 +185,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void showLoginProgress(boolean show) {
-        contentLogin.setVisibility(show ? View.VISIBLE : View.GONE);
-        contentMain.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
-
     private void launchFirebaseAuthUI() {
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                .setLogo(R.mipmap.ic_launcher)
+                .setLogo(R.drawable.icon_named)
                 .setTheme(R.style.LoginTheme)
                 .setProviders(Arrays.asList(
                         new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),

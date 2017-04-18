@@ -142,12 +142,15 @@ StackOverflow - Multiple small problems\n
     <string name="text_token_login">Logging in…</string>
     <string name="logged_in">Logged In</string>
     <string name="endTime">Leaving at\n</string>
-    <string name="section_request"><u>Requested</u></string>
+    <string name="section_request"><u>Requests</u></string>
     <string name="section_other"><u>Friends</u></string>
     <string name="section_near"><u>Nearby Friends</u></string>
+    <string name="section_pending"><u>Pending</u></string>
 
     <!-- FB Login Stuff -->
     <string name="facebook_application_id" translatable="false">396877390694093</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb396877390694093</string>
     <string name="title_activity_map">Map</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_confirm">Confirm</string>
 </resources>

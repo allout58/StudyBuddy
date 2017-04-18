@@ -48,10 +48,10 @@
                 app:layout_constraintLeft_toRightOf="@+id/imageViewFriend"
                 app:layout_constraintTop_toTopOf="parent"/>
             <Button
+                android:id="@+id/btnAddFriend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
-                android:onClick="@{()->FriendController.instance.newFriend(friend)}"
                 android:text="@string/btn_add"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>

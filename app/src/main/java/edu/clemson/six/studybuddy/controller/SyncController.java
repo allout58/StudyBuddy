@@ -108,7 +108,10 @@ public class SyncController {
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("connected").getAsJsonArray()) {
                     JsonObject elO = el.getAsJsonObject();
-                    Location loc = LocationController.getInstance().getLocationById(elO.get("locationID").getAsInt());
+                    Location loc = null;
+                    if (!elO.get("locationID").isJsonNull()) {
+                        loc = LocationController.getInstance().getLocationById(elO.get("locationID").getAsInt());
+                    }
                     SubLocation sl = null;
                     if (loc != null && !elO.get("subID").isJsonNull()) {
                         sl = loc.getSubLocationByID(elO.get("subID").getAsInt());
@@ -121,9 +124,13 @@ public class SyncController {
                     if (!elO.get("endTime").isJsonNull()) {
                         date = new Date(elO.get("endTime").getAsLong());
                     }
+                    String image = "";
+                    if (!elO.get("imageURL").isJsonNull()) {
+                        image = elO.get("imageURL").getAsString();
+                    }
                     friend = new Friend(
                             elO.get("firebase_uid").getAsString(),
-                            elO.get("imageURL").getAsString(),
+                            image,
                             elO.get("realName").getAsString(),
                             loc, sl, blurb, date, true);
                     Log.d(TAG, "Friend " + friend.getName() + " " + friend.getUid());

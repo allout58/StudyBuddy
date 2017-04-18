@@ -2,7 +2,9 @@ package edu.clemson.six.studybuddy.controller;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -30,10 +32,19 @@ public class FriendSearchListAdapter extends RecyclerView.Adapter<FriendSearchLi
     }
 
     @Override
-    public void onBindViewHolder(FriendViewHolder holder, int position) {
-        Friend f = friendList.get(position);
+    public void onBindViewHolder(FriendViewHolder holder, final int position) {
+        final Friend f = friendList.get(position);
         holder.binding.setFriend(f);
         ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
+        Button btn = (Button) holder.binding.getRoot().findViewById(R.id.btnAddFriend);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Connor, do whatever else you want to do when we click add in the search
+                FriendController.getInstance().newFriend(f);
+                v.setVisibility(View.GONE);
+            }
+        });
         if (!f.getImageURL().isEmpty())
             Picasso.with(holder.parent.getContext())
                     .load(f.getImageURL())

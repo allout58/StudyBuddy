@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "805299222455-a0fvvkcndemilib45hfqet1r0gbpb5no.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.clemson.six.studybuddy",
+            "certificate_hash": "cc9e2fdac4f9b15d67c99eca117bb0debc331ca7"
+          }
+        },
+        {
           "client_id": "805299222455-8q5fdi0c45mvmnur35spg1svk2in90ju.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,6 +44,50 @@
           "android_info": {
             "package_name": "edu.clemson.six.studybuddy",
             "certificate_hash": "a11aea9e360057250d9afa9588cf7ce9719833ee"
+          }
+        },
+        {
+          "client_id": "805299222455-i0642v2djrdm621av5bibq5892rn81ou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6OwPRoQ1GtM9VmEhzU5gHMeh99Gqt5OI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805299222455-i0642v2djrdm621av5bibq5892rn81ou.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805299222455:android:5920de3503a2d18c",
+        "android_client_info": {
+          "package_name": "com.google.firebase.quickstart.fcm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805299222455-2e19g70dul8og257enljc9tltonmn43m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.quickstart.fcm",
+            "certificate_hash": "69515f7ec543b50362eff53175dba181c8d54a97"
           }
         },
         {
