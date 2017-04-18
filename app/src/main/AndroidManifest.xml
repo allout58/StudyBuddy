@@ -15,6 +15,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -61,13 +62,6 @@
         <activity
             android:name=".view.AddFriendActivity"
             android:label="@string/title_activity_friend_add">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.clemson.six.studybuddy.view.FriendsActivity" />
-        </activity>
-        <activity
-            android:name=".view.FriendRequestsActivity"
-            android:label="@string/title_activity_friend_request">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.clemson.six.studybuddy.view.FriendsActivity" />

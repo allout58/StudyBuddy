@@ -153,4 +153,5 @@ StackOverflow - Multiple small problems\n
     <string name="title_activity_map">Map</string>
     <string name="action_delete">Delete</string>
     <string name="action_confirm">Confirm</string>
+    <string name="txt_current_location">Current Location:</string>
 </resources>
