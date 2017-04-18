@@ -52,43 +52,24 @@ public class Friend {
         return subLocation;
     }
 
-    public void setSubLocation(SubLocation subLocation) {
-        this.subLocation = subLocation;
-    }
-
     public String getBlurb() {
         return blurb;
-    }
-
-    public void setBlurb(String blurb) {
-        this.blurb = blurb;
     }
 
     public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
     public String getEndTimeString() {
-        return endTime == null ? "" : new SimpleDateFormat("h:mm a").format(endTime);
+        return endTime == null ? "" : SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT).format(endTime);
     }
 
     public boolean isConfirmed() {
         return confirmed;
     }
 
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed = confirmed;
-    }
-
     public String getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
 }

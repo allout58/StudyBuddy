@@ -4,6 +4,5 @@
     <color name="colorPrimaryLight">#5c6bc0</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4040</color>
-    <color name="colorBorder">#FFF</color>
     <color name="colorOpacityBlack">#99000000</color>
 </resources>

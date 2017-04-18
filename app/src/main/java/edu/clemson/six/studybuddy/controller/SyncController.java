@@ -1,5 +1,6 @@
 package edu.clemson.six.studybuddy.controller;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,6 +14,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,7 +125,13 @@ public class SyncController {
                     }
                     Date date = null;
                     if (!elO.get("endTime").isJsonNull()) {
-                        date = new Date(elO.get("endTime").getAsLong());
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+                        try {
+                            date = format.parse(elO.get("endTime").getAsString());
+                            Log.d(TAG, String.format("Incoming: %s, Parsed: %s", elO.get("endTime").getAsString(), SimpleDateFormat.getTimeInstance().format(date)));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                     String image = "";
                     if (!elO.get("imageURL").isJsonNull()) {
