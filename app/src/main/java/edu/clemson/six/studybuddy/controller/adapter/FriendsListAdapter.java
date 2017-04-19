@@ -1,4 +1,4 @@
-package edu.clemson.six.studybuddy.controller;
+package edu.clemson.six.studybuddy.controller.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import edu.clemson.six.studybuddy.R;
+import edu.clemson.six.studybuddy.controller.FriendController;
 import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;

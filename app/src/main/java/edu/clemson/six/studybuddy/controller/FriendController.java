@@ -155,4 +155,22 @@ public class FriendController {
             }
         }
     }
+
+    private class ConfirmFriendTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Map<String, String> args = new HashMap<>();
+            args.put("jwt", params[0]);
+            args.put("otherID", params[1]);
+            ConnectionDetails con = APIConnector.setupConnection("friend.request", args, ConnectionDetails.Method.POST);
+            try {
+                JsonObject obj = APIConnector.connect(con).getAsJsonObject();
+                return obj.has("status") && obj.get("status").getAsString().equals("success");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,10 +24,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.gson.JsonElement;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.LocationController;
+import edu.clemson.six.studybuddy.controller.UserLocationController;
+import edu.clemson.six.studybuddy.controller.net.APIConnector;
+import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -82,10 +95,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
             if (location.distanceTo(point) < loc.getMapRadius() && !inRange) {
                 inRange = true;
-                LocationController.getInstance().setCurrentLocation(loc);
+                UserLocationController.getInstance().setCurrentLocation(loc);
+                FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        ChangeLocationTask t = new ChangeLocationTask();
+                        t.execute(task.getResult().getToken());
+                    }
+                });
                 Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
                 break;
-            } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && inRange && LocationController.getInstance().getCurrentLocation() == loc) {
+            } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && inRange && UserLocationController.getInstance().getCurrentLocation() == loc) {
                 inRange = false;
                 Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                 break;
@@ -166,6 +186,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 updateCurrentLocation(lastKnownLocation);
             }
 
+        }
+    }
+
+    private class ChangeLocationTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Map<String, String> args = new HashMap<>();
+            args.put("jwt", params[0]);
+            args.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
+            ConnectionDetails dets = APIConnector.setupConnection("user.set_sub_location", args, ConnectionDetails.Method.POST);
+            try {
+                JsonElement el = APIConnector.connect(dets);
+                // TODO Check for success for the API call??
+
+            } catch (IOException e) {
+                Log.e("MapActivity", "Error connecting to API", e);
+            }
+            return false;
         }
     }
 }

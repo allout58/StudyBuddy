@@ -1,11 +1,11 @@
 package edu.clemson.six.studybuddy.model;
 
-/**
- * Created by jthollo on 3/28/2017.
- */
 
+/**
+ * Models a sublocation
+ */
 public class SubLocation {
-    public static final SubLocation OTHER = new SubLocation(-1, "Other", null);
+    public static final SubLocation OTHER = new SubLocation(-1, "-Other-", null);
 
     private final int subID;
     private final String name;

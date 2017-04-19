@@ -57,6 +57,7 @@ public class SyncController {
     }
 
     public void syncFriends(final Runnable r) {
+        LocalDatabaseController.getInstance(null).clearFriendsAndRequests();
         Log.d(TAG, "Synchronizing friends");
         FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override

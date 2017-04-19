@@ -135,7 +135,7 @@ StackOverflow - Multiple small problems\n
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="text_token_login">Logging in…</string>
     <string name="logged_in">Logged In</string>
-    <string name="endTime">Leaving at\n</string>
+    <string name="endTime">Leaving at</string>
     <string name="section_request"><u>Requests</u></string>
     <string name="section_other"><u>Friends</u></string>
     <string name="section_near"><u>Nearby Friends</u></string>
@@ -148,4 +148,8 @@ StackOverflow - Multiple small problems\n
     <string name="action_delete">Delete</string>
     <string name="action_confirm">Confirm</string>
     <string name="txt_current_location">Current Location:</string>
+    <string name="changeTime">Change Time</string>
+    <string name="action_save">Save</string>
+    <string name="notSet">Not Set</string>
+    <string name="otherLocation">Other:</string>
 </resources>

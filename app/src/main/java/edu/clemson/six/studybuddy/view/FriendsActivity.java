@@ -13,8 +13,8 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.R;
-import edu.clemson.six.studybuddy.controller.FriendsListAdapter;
 import edu.clemson.six.studybuddy.controller.SyncController;
+import edu.clemson.six.studybuddy.controller.adapter.FriendsListAdapter;
 
 public class FriendsActivity extends AppCompatActivity {
 

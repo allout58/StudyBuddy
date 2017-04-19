@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import edu.clemson.six.studybuddy.R;
-import edu.clemson.six.studybuddy.controller.FriendSearchListAdapter;
+import edu.clemson.six.studybuddy.controller.adapter.FriendSearchListAdapter;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.model.Friend;
