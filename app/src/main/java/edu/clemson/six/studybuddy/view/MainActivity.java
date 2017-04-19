@@ -1,5 +1,7 @@
 package edu.clemson.six.studybuddy.view;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -132,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Initialize the database connection
         LocalDatabaseController.getInstance(this);
-
     }
 
 

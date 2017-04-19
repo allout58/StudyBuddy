@@ -173,5 +173,7 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
                 finish();
             }
         }
+        else
+            txtViewCurrentLoc.setText("N/A");
     }
 }
