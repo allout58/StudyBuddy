@@ -102,8 +102,8 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
                     textView.setVisibility(View.GONE);
                 }
             });
-
-        }
+        } else
+            txtViewCurrentLoc.setText("N/A");
     }
 
     @OnClick({R.id.btnChangeTime, R.id.btnSave})
@@ -173,7 +173,5 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
                 finish();
             }
         }
-        else
-            txtViewCurrentLoc.setText("N/A");
     }
 }
