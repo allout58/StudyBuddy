@@ -87,8 +87,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void updateCurrentLocation(Location location) {
-        for (int i = 0; i < LocationController.getInstance().getAllLocations().length; i++) {
-            edu.clemson.six.studybuddy.model.Location loc = LocationController.getInstance().getLocation(i);
+        for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
             Location point = new Location("dist");
             point.setLongitude(loc.getLongitude());
             point.setLatitude(loc.getLatitude());
@@ -196,7 +195,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
             args.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
-            ConnectionDetails dets = APIConnector.setupConnection("user.set_sub_location", args, ConnectionDetails.Method.POST);
+            Log.d("ChangeLocationTask", String.format("Sending location %s (%d) to the server", UserLocationController.getInstance().getCurrentLocation().getName(), UserLocationController.getInstance().getCurrentLocation().getId()));
+            ConnectionDetails dets = APIConnector.setupConnection("user.set_location", args, ConnectionDetails.Method.POST);
             try {
                 JsonElement el = APIConnector.connect(dets);
                 // TODO Check for success for the API call??
