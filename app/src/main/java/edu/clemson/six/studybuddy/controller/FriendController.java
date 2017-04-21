@@ -118,6 +118,17 @@ public class FriendController {
         });
     }
 
+    public void confirmFriend(final Friend f) {
+        Log.d(TAG, "Confirming new friend " + f.getName());
+        FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                ConfirmFriendTask t = new ConfirmFriendTask();
+                t.execute(task.getResult().getToken(), f.getUid());
+            }
+        });
+    }
+
 
     public void reload() {
         friendMap.clear();

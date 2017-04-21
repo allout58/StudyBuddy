@@ -41,7 +41,6 @@ public class FriendSearchListAdapter extends RecyclerView.Adapter<FriendSearchLi
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Connor, do whatever else you want to do when we click add in the search
                 FriendController.getInstance().newFriend(f);
                 v.setVisibility(View.GONE);
             }

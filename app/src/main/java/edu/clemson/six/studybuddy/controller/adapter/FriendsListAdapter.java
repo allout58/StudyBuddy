@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,7 +73,7 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
 
     @Override
     public void onBindViewHolder(FriendViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        Friend f;
+        final Friend f;
         boolean isMine = false;
         switch (section) {
             case SECTION_OTHER:
@@ -88,9 +89,21 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
             default:
                 f = null;
         }
+
+        holder.binding.setFriend(f);
+        ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
+        Button btn = (Button) holder.binding.getRoot().findViewById(R.id.btnConfirmFriend);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FriendController.getInstance().confirmFriend(f);
+                v.setVisibility(View.GONE);
+            }
+        });
+
         holder.binding.setFriend(f);
         holder.binding.setIsMine(isMine);
-        ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
+        v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         if (!f.getImageURL().isEmpty())
             Picasso.with(holder.parent.getContext())
                     .load(f.getImageURL())
