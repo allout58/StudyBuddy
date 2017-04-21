@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 
 import java.util.Calendar;
+import java.util.Date;
+
+import edu.clemson.six.studybuddy.controller.UserLocationController;
 
 /**
  * Created by jthollo on 4/18/2017.
@@ -20,9 +23,17 @@ public class TimePickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
+        int hour, minute;
+        if(UserLocationController.getInstance().getCurrentEndTime() != null) {
+            Date date = UserLocationController.getInstance().getCurrentEndTime();
+            hour = date.getHours();
+            minute = date.getMinutes();
+        }
+        else {
+            final Calendar c = Calendar.getInstance();
+            hour = c.get(Calendar.HOUR_OF_DAY);
+            minute = c.get(Calendar.MINUTE);
+        }
 
         // Create a new instance of TimePickerDialog and return it
         return new TimePickerDialog(getActivity(), listener, hour, minute,

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +77,16 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textViewTime.setText(R.string.notSet);
+
+        if(UserLocationController.getInstance().getCurrentEndTime()!=null) {
+            Date endtime = UserLocationController.getInstance().getCurrentEndTime();
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, endtime.getHours());
+            c.set(Calendar.MINUTE, endtime.getMinutes());
+            textViewTime.setText(SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime()));
+        }
+        else
+            textViewTime.setText(R.string.notSet);
 
         Location loc = UserLocationController.getInstance().getCurrentLocation();
         SubLocation subloc = UserLocationController.getInstance().getCurrentSubLocation();
