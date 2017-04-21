@@ -79,10 +79,14 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
         textViewTime.setText(R.string.notSet);
 
         Location loc = UserLocationController.getInstance().getCurrentLocation();
+        SubLocation subloc = UserLocationController.getInstance().getCurrentSubLocation();
         if (loc != null) {
             txtViewCurrentLoc.setText(loc.getName());
             final ArrayAdapter<SubLocation> subLocationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, loc.getSublocations());
             spinner.setAdapter(subLocationArrayAdapter);
+            if(subloc!=null) {
+                spinner.setSelection(subLocationArrayAdapter.getPosition(subloc));
+            }
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
