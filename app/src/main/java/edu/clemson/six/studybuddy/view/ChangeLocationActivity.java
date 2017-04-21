@@ -118,6 +118,9 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
             });
         } else
             txtViewCurrentLoc.setText("N/A");
+        if (loc==null) {
+            btnSave.setVisibility(View.GONE);
+        }
     }
 
     @OnClick({R.id.btnChangeTime, R.id.btnSave})
@@ -167,7 +170,8 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
             Map<String, String> args2 = new HashMap<>();
             args2.put("jwt", params[0]);
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-            args2.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
+            if (UserLocationController.getInstance().getCurrentEndTime()!= null)
+                args2.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
             ConnectionDetails dets = APIConnector.setupConnection("user.set_sub_location", args, ConnectionDetails.Method.POST);
             ConnectionDetails dets2 = APIConnector.setupConnection("user.set_endtime", args2, ConnectionDetails.Method.POST);
             try {
