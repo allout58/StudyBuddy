@@ -15,11 +15,14 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.UserLocationController;
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 
 /**
- * Created by jthollo on 4/21/2017.
+ * Service to manage tracking the user's location
  */
 
 public class LocationTrackingService extends Service {
@@ -63,6 +66,7 @@ public class LocationTrackingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "Stopping LocationTracking Service");
         locationManager.removeUpdates(locationListener);
     }
 
@@ -71,7 +75,14 @@ public class LocationTrackingService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             float minDist = 9000;
+            Log.d(TAG, "Location Changed");
+            Log.d(TAG, "Firebase User: " + (FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getDisplayName() : "None"));
+            if (LocationController.getInstance().getAllLocations() == null) {
+                LocalDatabaseController.getInstance(LocationTrackingService.this);
+                LocationController.getInstance().reload();
+            }
             for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
+                Log.d(TAG, "Location: " + loc.toString());
                 boolean hasCurrent = UserLocationController.getInstance().getCurrentLocation() != null;
 
                 Location point = new Location("dist");
