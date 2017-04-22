@@ -1,8 +1,8 @@
 package edu.clemson.six.studybuddy.view;
 
-import android.app.Notification;
-import android.app.PendingIntent;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -55,9 +57,12 @@ import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
+import edu.clemson.six.studybuddy.service.LocationTrackingService;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int LOCATION_PERM_REQ = 1;
 
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -83,6 +88,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView textViewUser;
     ImageView imageViewUser;
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERM_REQ &&
+                (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) &&
+                SyncController.getInstance().isLocsSynced()) {
+            startLocationTrackingService();
+        }
+    }
+
+    private void startLocationTrackingService() {
+        Intent locServiceIntent = new Intent(this, LocationTrackingService.class);
+        startService(locServiceIntent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Initialize ButterKnife
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
 
         View v = navView.getHeaderView(0);
         textViewUser = (TextView) v.findViewById(R.id.textViewUser);
@@ -104,8 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onComplete(@NonNull Task<GetTokenResult> task) {
                     if (task.isSuccessful()) {
-                        VerifyTask verifyTask = new VerifyTask();
-                        verifyTask.execute(task.getResult().getToken());
+                        onLoggedIn(task.getResult().getToken());
                     } else {
                         task.getException().printStackTrace();
                     }
@@ -150,6 +173,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         LocalDatabaseController.getInstance(this).close();
         super.onDestroy();
+    }
+
+    private void onLoggedIn(String authToken) {
+
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        textViewUser.setText(u.getDisplayName());
+        Picasso.with(MainActivity.this)
+                .load(u.getPhotoUrl())
+                .resizeDimen(R.dimen.person_view_size, R.dimen.person_view_size)
+                .transform(new CircleTransform())
+                .placeholder(R.drawable.ic_person_white_150dp)
+                .into(imageViewUser);
+        SyncController.getInstance().syncLocations(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("SyncController", "Synchronized");
+                for (Location l :
+                        LocationController.getInstance().getAllLocations()) {
+                    Log.d("SyncController", l.toString());
+                    for (SubLocation sl :
+                            l.getSublocations()) {
+                        Log.d("SyncController", "\t" + sl.getId() + " " + sl.getName());
+                    }
+                }
+                // Start the location service after we have all the locations
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    startLocationTrackingService();
+                }
+            }
+        });
+        // Login to the server
+        VerifyTask task = new VerifyTask();
+        task.execute(authToken);
     }
 
 
@@ -209,8 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                         if (task.isSuccessful()) {
-                            VerifyTask verifyTask = new VerifyTask();
-                            verifyTask.execute(task.getResult().getToken());
+                            onLoggedIn(task.getResult().getToken());
                         } else {
                             task.getException().printStackTrace();
                         }
@@ -258,29 +313,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-                Log.d("VerifyTask", String.format("Name: %s, Image: %s", u.getDisplayName(), u.getPhotoUrl()));
-                textViewUser.setText(u.getDisplayName());
-                Picasso.with(MainActivity.this)
-                        .load(u.getPhotoUrl())
-                        .resizeDimen(R.dimen.person_view_size, R.dimen.person_view_size)
-                        .transform(new CircleTransform())
-                        .placeholder(R.drawable.ic_person_white_150dp)
-                        .into(imageViewUser);
-                SyncController.getInstance().syncLocations(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("VerifyTask", "Synchronized");
-                        for (Location l :
-                                LocationController.getInstance().getAllLocations()) {
-                            Log.d("VerifyTask", l.toString());
-                            for (SubLocation sl :
-                                    l.getSublocations()) {
-                                Log.d("VerifyTask", "\t" + sl.getId() + " " + sl.getName());
-                            }
-                        }
-                    }
-                });
                 LocalDatabaseController.getInstance(null).clearFriendsAndRequests();
                 SyncController.getInstance().syncFriends(null);
             }

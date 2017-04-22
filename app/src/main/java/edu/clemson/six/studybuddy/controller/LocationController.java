@@ -18,6 +18,7 @@ public class LocationController {
     private Map<String, Location> locationMap;
     private SparseArray<Location> locationIDMap;
     private Location[] locations;
+    private double maxRadius = 0;
 
     private LocationController() {
         locationMap = new HashMap<>();
@@ -26,6 +27,10 @@ public class LocationController {
 
     public static LocationController getInstance() {
         return instance;
+    }
+
+    public double getMaxRadius() {
+        return maxRadius;
     }
 
     public Location getLocationByName(String name) {
@@ -70,6 +75,7 @@ public class LocationController {
         for (Location loc : l) {
             locationMap.put(loc.getName(), loc);
             locationIDMap.put(loc.getId(), loc);
+            maxRadius = Math.max(maxRadius, loc.getRadius());
         }
         locationMap.put(Location.OTHER.getName(), Location.OTHER);
         locationIDMap.put(Location.OTHER.getId(), Location.OTHER);

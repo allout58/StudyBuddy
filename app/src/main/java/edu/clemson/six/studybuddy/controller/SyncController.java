@@ -37,6 +37,8 @@ public class SyncController {
     private static final SyncController instance = new SyncController();
     private long serverTimeOffset;
 
+    private boolean isLocsSynced = false;
+
     private SyncController() {
     }
 
@@ -69,21 +71,6 @@ public class SyncController {
         });
     }
 
-    public void beginSync() {
-        if (LocalDatabaseController.getInstance(null).getMostRecentUserID() != FirebaseAuth.getInstance().getCurrentUser().getUid()) {
-            // Do first time download
-            Log.d(TAG, "Initial synchronization for user");
-//            UnifiedDatabaseController.getInstance(null).getLocal().clearCars();
-//            FirstSyncTask task = new FirstSyncTask();
-//            task.execute();
-        } else {
-            // Check if need to download/upload according to timestamps
-            // Do synchronize download
-            Log.d(TAG, "Synchronize new items");
-//            NewSyncTask task = new NewSyncTask();
-//            task.execute();
-        }
-    }
 
     public long getServerTimeOffset() {
         return serverTimeOffset;
@@ -91,6 +78,10 @@ public class SyncController {
 
     public void setServerTimeOffset(long serverTimeOffset) {
         this.serverTimeOffset = serverTimeOffset;
+    }
+
+    public boolean isLocsSynced() {
+        return isLocsSynced;
     }
 
     private class FriendSyncTask extends AsyncTask<String, Integer, Boolean> {
@@ -246,6 +237,7 @@ public class SyncController {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             if (aBoolean) {
+                isLocsSynced = true;
                 if (this.callback != null) {
                     callback.run();
                 }
