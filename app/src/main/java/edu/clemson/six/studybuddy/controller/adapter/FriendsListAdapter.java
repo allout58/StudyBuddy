@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
+import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
@@ -72,7 +73,7 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
     }
 
     @Override
-    public void onBindViewHolder(FriendViewHolder holder, int section, int relativePosition, int absolutePosition) {
+    public void onBindViewHolder(FriendViewHolder holder, int section, int relativePosition, final int absolutePosition) {
         final Friend f;
         boolean isMine = false;
         switch (section) {
@@ -89,9 +90,6 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
             default:
                 f = null;
         }
-
-        holder.binding.setFriend(f);
-        ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         Button btn = (Button) holder.binding.getRoot().findViewById(R.id.btnConfirmFriend);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,9 +99,23 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
             }
         });
 
+        btn = (Button) holder.binding.getRoot().findViewById(R.id.btnDeleteFriend);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FriendController.getInstance().deleteFriend(f);
+                SyncController.getInstance().syncFriends(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
         holder.binding.setFriend(f);
         holder.binding.setIsMine(isMine);
-        v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
+        ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         if (!f.getImageURL().isEmpty())
             Picasso.with(holder.parent.getContext())
                     .load(f.getImageURL())

@@ -22,6 +22,9 @@ public final class Constants {
 
     public static final String ACTION_CLOSE_NOTIF = "LocationTrackingService.ACTION_CLOSE_NOTIF";
 
+    public static final int NOTIFICATION_LOCATION_CHANGE = 1;
+    public static final int NOTIFICATION_FRIEND_ADD = 2;
+
     private Constants() {
 
     }

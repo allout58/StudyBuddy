@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.UserLocationController;
@@ -33,7 +34,6 @@ import edu.clemson.six.studybuddy.view.ChangeLocationActivity;
  */
 
 public class LocationTrackingService extends Service {
-    public static final int NOTIFICATION_ID = 42;
     private static final int UPDATE_WAIT_TIME = 4000; // In milliseconds
     private static final float UPDATE_MIN_DIST = 3; // In meters
     private static final String TAG = "LocationTrackingService";
@@ -135,7 +135,7 @@ public class LocationTrackingService extends Service {
                     if (!binder.isApplicationActive()) {
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(LocationTrackingService.this)
-                                        .setSmallIcon(R.drawable.ic_my_location_black_24dp)
+                                        .setSmallIcon(R.drawable.ic_library_books_black_24dp)
                                         .setContentTitle("Are you in " + loc.getName() + "?")
                                         .setContentText("Click here to specify where you are and let your friends know you are here.");
                         // Creates an explicit intent for an Activity in your app
@@ -158,7 +158,7 @@ public class LocationTrackingService extends Service {
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         // mId allows you to update the notification later on.
-                        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+                        mNotificationManager.notify(Constants.NOTIFICATION_LOCATION_CHANGE, mBuilder.build());
                     }
 
                     Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
@@ -167,7 +167,7 @@ public class LocationTrackingService extends Service {
                     Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                     UserLocationController.getInstance().setCurrentLocation(null);
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.cancel(NOTIFICATION_ID);
+                    mNotificationManager.cancel(Constants.NOTIFICATION_LOCATION_CHANGE);
                     break;
                 }
             }

@@ -130,6 +130,17 @@ public class FriendController {
         });
     }
 
+    public void deleteFriend(final Friend f) {
+        Log.d(TAG, "Deleting friend " + f.getName());
+        FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                DeleteFriendTask t = new DeleteFriendTask();
+                t.execute(task.getResult().getToken(), f.getUid());
+            }
+        });
+    }
+
 
     public void reload() {
         friendMap.clear();
@@ -176,7 +187,7 @@ public class FriendController {
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
             args.put("otherID", params[1]);
-            ConnectionDetails con = APIConnector.setupConnection("friend.request", args, ConnectionDetails.Method.POST);
+            ConnectionDetails con = APIConnector.setupConnection("friend.confirm", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject obj = APIConnector.connect(con).getAsJsonObject();
                 return obj.has("status") && obj.get("status").getAsString().equals("success");
@@ -186,4 +197,23 @@ public class FriendController {
             }
         }
     }
+
+    private class DeleteFriendTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Map<String, String> args = new HashMap<>();
+            args.put("jwt", params[0]);
+            args.put("otherID", params[1]);
+            ConnectionDetails con = APIConnector.setupConnection("friend.delete", args, ConnectionDetails.Method.POST);
+            try {
+                JsonObject obj = APIConnector.connect(con).getAsJsonObject();
+                return obj.has("status") && obj.get("status").getAsString().equals("success");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
 }
