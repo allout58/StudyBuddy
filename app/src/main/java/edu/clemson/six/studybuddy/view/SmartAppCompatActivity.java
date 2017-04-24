@@ -19,6 +19,7 @@ public abstract class SmartAppCompatActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 LocationTrackingService.LTSBinder binder = (LocationTrackingService.LTSBinder) service;
                 binder.setApplicationActive(true);
+                unbindService(this);
             }
 
             @Override
@@ -37,6 +38,7 @@ public abstract class SmartAppCompatActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 LocationTrackingService.LTSBinder binder = (LocationTrackingService.LTSBinder) service;
                 binder.setApplicationActive(false);
+                unbindService(this);
             }
 
             @Override

@@ -166,6 +166,7 @@ public class LocationTrackingService extends Service {
                 } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && hasCurrent && UserLocationController.getInstance().getCurrentLocation() == loc) {
                     Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                     UserLocationController.getInstance().setCurrentLocation(null);
+                    //TODO: Let server know we aren't there anymore
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(Constants.NOTIFICATION_LOCATION_CHANGE);
                     break;

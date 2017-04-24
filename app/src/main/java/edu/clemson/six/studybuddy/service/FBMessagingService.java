@@ -33,6 +33,7 @@ public class FBMessagingService extends FirebaseMessagingService {
         Map<String, String> data = remoteMessage.getData();
         if (data != null) {
             if (data.get("moved") != null) {
+                Log.d(TAG, "Friend Moved");
                 SyncController.getInstance().syncFriends(new Runnable() {
                     @Override
                     public void run() {
@@ -40,6 +41,7 @@ public class FBMessagingService extends FirebaseMessagingService {
                     }
                 });
             } else if (data.get("request") != null) {
+                Log.d(TAG, "New friend request");
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_library_books_black_24dp)
@@ -66,6 +68,13 @@ public class FBMessagingService extends FirebaseMessagingService {
 
                 // mId allows you to update the notification later on.
                 mNotificationManager.notify(Constants.NOTIFICATION_FRIEND_ADD, mBuilder.build());
+
+                SyncController.getInstance().syncFriends(new Runnable() {
+                    @Override
+                    public void run() {
+                        FriendsListAdapter.getInstance().notifyDataSetChanged();
+                    }
+                });
             }
         }
 //        Log.d(TAG, "Message " + remoteMessage.getNotification().getBody());
