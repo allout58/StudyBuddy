@@ -3,7 +3,6 @@ package edu.clemson.six.studybuddy.view;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +31,7 @@ import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.model.Friend;
 
-public class AddFriendActivity extends AppCompatActivity {
+public class AddFriendActivity extends SmartAppCompatActivity {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;

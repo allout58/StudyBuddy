@@ -18,9 +18,9 @@ public final class Constants {
      */
     public static final int API_RETRIES = 3;
 
-    public static final String PREFS_LOGIN = "prefs.login";
-
     public static final int RC_SIGN_IN = 4242;
+
+    public static final String ACTION_CLOSE_NOTIF = "LocationTrackingService.ACTION_CLOSE_NOTIF";
 
     private Constants() {
 

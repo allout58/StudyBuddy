@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,10 +23,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.gson.JsonElement;
 
 import java.io.IOException;
@@ -87,29 +82,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void updateCurrentLocation(Location location) {
-        for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
-            Location point = new Location("dist");
-            point.setLongitude(loc.getLongitude());
-            point.setLatitude(loc.getLatitude());
-
-            if (location.distanceTo(point) < loc.getMapRadius() && !inRange) {
-                inRange = true;
-                UserLocationController.getInstance().setCurrentLocation(loc);
-                FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-                        ChangeLocationTask t = new ChangeLocationTask();
-                        t.execute(task.getResult().getToken());
-                    }
-                });
-                Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
-                break;
-            } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && inRange && UserLocationController.getInstance().getCurrentLocation() == loc) {
-                inRange = false;
-                Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
-                break;
-            }
-        }
+//        for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
+//            Location point = new Location("dist");
+//            point.setLongitude(loc.getLongitude());
+//            point.setLatitude(loc.getLatitude());
+//
+//            if (location.distanceTo(point) < loc.getMapRadius() && !inRange) {
+//                inRange = true;
+//                UserLocationController.getInstance().setCurrentLocation(loc);
+//                FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                        ChangeLocationTask t = new ChangeLocationTask();
+//                        t.execute(task.getResult().getToken());
+//                    }
+//                });
+//                Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
+//                break;
+//            } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && inRange && UserLocationController.getInstance().getCurrentLocation() == loc) {
+//                inRange = false;
+//                Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
+//                break;
+//            }
+//        }
     }
 
     @Override

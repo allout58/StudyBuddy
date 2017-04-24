@@ -17,7 +17,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -60,7 +59,7 @@ import edu.clemson.six.studybuddy.model.SubLocation;
 import edu.clemson.six.studybuddy.service.LocationTrackingService;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends SmartAppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int LOCATION_PERM_REQ = 1;
 
@@ -111,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Initialize ButterKnife
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
+
+        Log.d("MainActivity", String.format("Action: %s, Type: %s", getIntent().getAction(), getIntent().getType()));
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);

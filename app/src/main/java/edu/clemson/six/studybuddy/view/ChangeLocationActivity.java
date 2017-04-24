@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +42,7 @@ import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
 import edu.clemson.six.studybuddy.view.component.TimePickerFragment;
 
-public class ChangeLocationActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class ChangeLocationActivity extends SmartAppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "ChangeLocationActivity";
 
@@ -77,15 +76,13 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        if(UserLocationController.getInstance().getCurrentEndTime()!=null) {
+        if (UserLocationController.getInstance().getCurrentEndTime() != null) {
             Date endtime = UserLocationController.getInstance().getCurrentEndTime();
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, endtime.getHours());
             c.set(Calendar.MINUTE, endtime.getMinutes());
             textViewTime.setText(SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime()));
-        }
-        else
+        } else
             textViewTime.setText(R.string.notSet);
 
         Location loc = UserLocationController.getInstance().getCurrentLocation();
@@ -94,7 +91,7 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
             txtViewCurrentLoc.setText(loc.getName());
             final ArrayAdapter<SubLocation> subLocationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, loc.getSublocations());
             spinner.setAdapter(subLocationArrayAdapter);
-            if(subloc!=null) {
+            if (subloc != null) {
                 spinner.setSelection(subLocationArrayAdapter.getPosition(subloc));
             }
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -118,7 +115,7 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
             });
         } else
             txtViewCurrentLoc.setText("N/A");
-        if (loc==null) {
+        if (loc == null) {
             btnSave.setVisibility(View.GONE);
         }
     }
@@ -155,6 +152,9 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
         textViewTime.setText(SimpleDateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime()));
     }
 
+    /**
+     * Sends the location, sublocation, and endtime to the server
+     */
     private class ChangeLocationTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -163,20 +163,26 @@ public class ChangeLocationActivity extends AppCompatActivity implements TimePic
 
         @Override
         protected Boolean doInBackground(String... params) {
+            // TODO: Decide if this should be one API call or the three that is is now
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
             args.put("sublocationID", String.valueOf(UserLocationController.getInstance().getCurrentSubLocation().getId()));
             args.put("other", params[1]);
             Map<String, String> args2 = new HashMap<>();
             args2.put("jwt", params[0]);
+            Map<String, String> args3 = new HashMap<>();
+            args3.put("jwt", params[0]);
+            args3.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-            if (UserLocationController.getInstance().getCurrentEndTime()!= null)
+            if (UserLocationController.getInstance().getCurrentEndTime() != null)
                 args2.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
             ConnectionDetails dets = APIConnector.setupConnection("user.set_sub_location", args, ConnectionDetails.Method.POST);
             ConnectionDetails dets2 = APIConnector.setupConnection("user.set_endtime", args2, ConnectionDetails.Method.POST);
+            ConnectionDetails dets3 = APIConnector.setupConnection("user.set_location", args3, ConnectionDetails.Method.POST);
             try {
                 JsonElement el = APIConnector.connect(dets);
                 JsonElement el2 = APIConnector.connect(dets2);
+                JsonElement el3 = APIConnector.connect(dets3);
                 // TODO Check for success for the API calls??
                 return true;
             } catch (IOException e) {

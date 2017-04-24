@@ -1,7 +1,6 @@
 package edu.clemson.six.studybuddy.view;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
@@ -10,7 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.R;
 
-public class InformationActivity extends AppCompatActivity {
+public class InformationActivity extends SmartAppCompatActivity {
 
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;

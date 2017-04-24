@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +15,7 @@ import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.adapter.FriendsListAdapter;
 
-public class FriendsActivity extends AppCompatActivity {
+public class FriendsActivity extends SmartAppCompatActivity {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
