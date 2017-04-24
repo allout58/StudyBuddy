@@ -51,6 +51,7 @@ import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
+import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
@@ -66,7 +67,7 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
 
     @InjectView(R.id.toolbar)
     protected Toolbar toolbar;
-    @InjectView(R.id.car_list)
+    @InjectView(R.id.friends_list)
     protected RecyclerView recyclerView;
     @InjectView(R.id.main_coordinator)
     protected CoordinatorLayout mainCoordinator;
@@ -78,15 +79,10 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
     protected LinearLayoutManager layoutManager;
     @InjectView(R.id.nav_view)
     NavigationView navView;
-    @InjectView(R.id.textViewMain)
-    TextView textViewMain;
-    @InjectView(R.id.content_main)
-    RelativeLayout contentMain;
-    @InjectView(R.id.progressTokenLogin)
-    LinearLayout contentLogin;
 
     TextView textViewUser;
     ImageView imageViewUser;
+    private HomePageAdapter adapter = new HomePageAdapter();
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -159,6 +155,14 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
 
         // Initialize the database connection
         LocalDatabaseController.getInstance(this);
+
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(adapter);
     }
 
 
