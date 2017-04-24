@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -138,6 +139,7 @@ public class FriendController {
         for (Friend f : LocalDatabaseController.getInstance(null).getFriends()) {
             friendMap.put(f.getUid(), f);
             friends.add(f);
+            FirebaseMessaging.getInstance().subscribeToTopic(f.getUid());
         }
         for (Friend f : LocalDatabaseController.getInstance(null).getRequests()) {
             friendMap.put(f.getUid(), f);

@@ -56,6 +56,7 @@ import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
+import edu.clemson.six.studybuddy.service.FBInstanceIDService;
 import edu.clemson.six.studybuddy.service.LocationTrackingService;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
@@ -186,6 +187,7 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
                 .transform(new CircleTransform())
                 .placeholder(R.drawable.ic_person_white_150dp)
                 .into(imageViewUser);
+
         SyncController.getInstance().syncLocations(new Runnable() {
             @Override
             public void run() {
@@ -204,6 +206,7 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
                 }
             }
         });
+
         // Login to the server
         VerifyTask task = new VerifyTask();
         task.execute(authToken);
@@ -316,6 +319,7 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
             if (result) {
                 LocalDatabaseController.getInstance(null).clearFriendsAndRequests();
                 SyncController.getInstance().syncFriends(null);
+                FBInstanceIDService.sendRegTokenToServer();
             }
         }
     }
