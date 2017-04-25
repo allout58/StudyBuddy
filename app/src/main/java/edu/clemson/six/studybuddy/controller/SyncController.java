@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
@@ -178,6 +179,7 @@ public class SyncController {
                 if (callback != null) {
                     callback.run();
                 }
+                HomePageAdapter.getInstance().notifyDataSetChanged();
             }
             super.onPostExecute(booleanResult);
         }
@@ -219,7 +221,7 @@ public class SyncController {
                 LocationController.getInstance().reload();
                 for (JsonElement el : obj.getAsJsonObject().get("sublocations").getAsJsonArray()) {
                     JsonObject o = el.getAsJsonObject();
-                    Location loc = LocationController.getInstance().getLocation(o.get("locationID").getAsInt());
+                    Location loc = LocationController.getInstance().getLocationById(o.get("locationID").getAsInt());
                     sl = new SubLocation(o.get("subID").getAsInt(), o.get("name").getAsString(), loc);
                     loc.addSubLocation(sl);
                     LocalDatabaseController.getInstance(null).syncSubLocation(sl);

@@ -8,7 +8,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -21,6 +20,7 @@ import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Friend;
+import edu.clemson.six.studybuddy.model.Location;
 
 /**
  * Created by jthollo on 3/28/2017.
@@ -31,13 +31,15 @@ public class FriendController {
     private static final FriendController instance = new FriendController();
     // Key of UID
     private Map<String, Friend> friendMap;
-    private List<Friend> friends, requests, myRequests;
+    private List<Friend> friends, requests, myRequests, nearby;
+    private int lastLocation = -2;
 
     private FriendController() {
         friendMap = new HashMap<>();
         myRequests = new ArrayList<>();
         requests = new ArrayList<>();
         friends = new ArrayList<>();
+        nearby = new ArrayList<>();
     }
 
     public static FriendController getInstance() {
@@ -87,6 +89,33 @@ public class FriendController {
         return f;
     }
 
+    /**
+     * Get all friends who are in the same main location as the user
+     *
+     * @return
+     */
+    public Friend[] getNearby() {
+        updateNearby();
+        Friend[] f = new Friend[nearby.size()];
+        nearby.toArray(f);
+        return f;
+    }
+
+    public void updateNearby() {
+        Location loc = UserLocationController.getInstance().getCurrentLocation();
+        if (loc != null && loc.getId() != this.lastLocation) {
+            Log.d(TAG, "Updating nearby: " + loc.getName());
+            nearby.clear();
+            for (Friend f : friends) {
+                if (f.getLocation() != null && f.getLocation().getId() == loc.getId()) {
+                    nearby.add(f);
+                    Log.d(TAG, "Adding friend " + f.getName());
+                }
+            }
+            lastLocation = loc.getId();
+        }
+    }
+
     public int getFriendsCount() {
         return friends.size();
     }
@@ -97,6 +126,11 @@ public class FriendController {
 
     public int getMyRequestsCount() {
         return myRequests.size();
+    }
+
+    public int getNearbyCount() {
+        updateNearby();
+        return nearby.size();
     }
 
 //    public void addFriend(Friend f) {
@@ -150,7 +184,6 @@ public class FriendController {
         for (Friend f : LocalDatabaseController.getInstance(null).getFriends()) {
             friendMap.put(f.getUid(), f);
             friends.add(f);
-            FirebaseMessaging.getInstance().subscribeToTopic(f.getUid());
         }
         for (Friend f : LocalDatabaseController.getInstance(null).getRequests()) {
             friendMap.put(f.getUid(), f);
@@ -160,6 +193,8 @@ public class FriendController {
             friendMap.put(f.getUid(), f);
             myRequests.add(f);
         }
+        lastLocation = -2;
+        updateNearby();
     }
 
     private class NewFriendTask extends AsyncTask<String, Void, Boolean> {

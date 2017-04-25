@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "StudyBuddy.db";
 
     private static final String SQL_CREATE_LOC = String.format("CREATE TABLE %s (" +
@@ -79,17 +79,37 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.FriendsRequestsContract.COLUMN_IMAGE_URL,
             DBContract.FriendsRequestsContract.COLUMN_IS_MINE);
 
+    private static final String SQL_CREATE_CURRENT_STATUS = String.format("CREATE TABLE %s (" +
+                    "%s INTEGER PRIMARY KEY," +
+                    "%s INTEGER," +
+                    "%s INTEGER," +
+                    "%s INTEGER" +
+                    ")",
+            DBContract.CurrentStatusEntry.TABLE_NAME,
+            DBContract.CurrentStatusEntry._ID,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME);
+
     private static final String SQL_DELETE_LOC = "DROP TABLE IF EXISTS " + DBContract.LocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_SUB_LOC = "DROP TABLE IF EXISTS " + DBContract.SubLocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_FRIENDS = "DROP TABLE IF EXISTS " + DBContract.FriendsContract.TABLE_NAME;
     private static final String SQL_DELETE_UPDATE_INFO = "DROP TABLE IF EXISTS " + DBContract.UpdateInfoEntry.TABLE_NAME;
     private static final String SQL_DELETE_FRIEND_REQUET = "DROP TABLE IF EXISTS " + DBContract.FriendsRequestsContract.TABLE_NAME;
+    private static final String SQL_DELETE_CURRENT_STATUS = "DROP TABLE IF EXISTS " + DBContract.CurrentStatusEntry.TABLE_NAME;
 
     private static final String SQL_INITIALIZE_UPDATE_INFO = String.format("INSERT INTO %s (%s, %s, %s) VALUES (1, '', 0)",
             DBContract.UpdateInfoEntry.TABLE_NAME,
             DBContract.UpdateInfoEntry._ID,
             DBContract.UpdateInfoEntry.COLUMN_USER_ID,
             DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
+
+    private static final String SQL_INITIALIZE_CURRENT_STATUS = String.format("INSERT INTO %s (%s, %s, %s, %s) VALUES (1, -1, -1, 0)",
+            DBContract.CurrentStatusEntry.TABLE_NAME,
+            DBContract.CurrentStatusEntry._ID,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME);
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -102,8 +122,10 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_FRIENDS);
         db.execSQL(SQL_CREATE_UPDATE_INFO);
         db.execSQL(SQL_CREATE_FRIEND_REQUEST);
+        db.execSQL(SQL_CREATE_CURRENT_STATUS);
 
         db.execSQL(SQL_INITIALIZE_UPDATE_INFO);
+        db.execSQL(SQL_INITIALIZE_CURRENT_STATUS);
     }
 
     @Override
@@ -114,6 +136,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_FRIENDS);
         db.execSQL(SQL_DELETE_UPDATE_INFO);
         db.execSQL(SQL_DELETE_FRIEND_REQUET);
+        db.execSQL(SQL_DELETE_CURRENT_STATUS);
         onCreate(db);
     }
 

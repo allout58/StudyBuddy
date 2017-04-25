@@ -1,45 +1,42 @@
 package edu.clemson.six.studybuddy.controller.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
-import edu.clemson.six.studybuddy.controller.UserLocationController;
-import edu.clemson.six.studybuddy.databinding.FriendSearchViewBinding;
+import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
-import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
 
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.FriendViewHolder> {
+    private static final String TAG = "HomePageAdapter";
+    private static final HomePageAdapter instance = new HomePageAdapter();
 
-    public final List<Friend> nearbyFriendsList = new ArrayList<>();
+    private HomePageAdapter() {
+    }
 
-    public HomePageAdapter() {
-        Location loc = UserLocationController.getInstance().getCurrentLocation();
-        if(loc != null)
-            for(int i = 0; i<FriendController.getInstance().getFriendsCount(); i++)
-                if (loc == FriendController.getInstance().getFriends()[i].getLocation())
-                    nearbyFriendsList.add(FriendController.getInstance().getFriends()[i]);
+    public static HomePageAdapter getInstance() {
+        return instance;
     }
 
     @Override
     public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        FriendSearchViewBinding binding = FriendSearchViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        FriendListingViewBinding binding = FriendListingViewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new FriendViewHolder(parent, binding);
     }
 
     @Override
     public void onBindViewHolder(FriendViewHolder holder, final int position) {
-        final Friend f = nearbyFriendsList.get(position);
+        final Friend f = FriendController.getInstance().getNearby()[position];
+        Log.d(TAG, String.format("Friend: RN %s ET %s", f.getName(), f.getEndTime()));
         holder.binding.setFriend(f);
+        holder.binding.setIsMine(false);
         ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         if (!f.getImageURL().isEmpty())
             Picasso.with(holder.parent.getContext())
@@ -59,14 +56,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.Friend
 
     @Override
     public int getItemCount() {
-        return nearbyFriendsList.size();
+        return FriendController.getInstance().getNearbyCount();
     }
 
     public class FriendViewHolder extends RecyclerView.ViewHolder {
         public final ViewGroup parent;
-        public final FriendSearchViewBinding binding;
+        public final FriendListingViewBinding binding;
 
-        public FriendViewHolder(ViewGroup parent, FriendSearchViewBinding binding) {
+        public FriendViewHolder(ViewGroup parent, FriendListingViewBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             this.parent = parent;

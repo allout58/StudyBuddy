@@ -2,6 +2,7 @@ package edu.clemson.six.studybuddy.controller;
 
 import java.util.Date;
 
+import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.model.SubLocation;
 
@@ -11,6 +12,7 @@ import edu.clemson.six.studybuddy.model.SubLocation;
 
 public class UserLocationController {
     private static final UserLocationController ourInstance = new UserLocationController();
+    private boolean isLoaded = false;
     private Location currentLocation = null;
     private SubLocation currentSubLocation = null;
     private Date currentEndTime = null;
@@ -23,6 +25,10 @@ public class UserLocationController {
     }
 
     public Location getCurrentLocation() {
+        if (!isLoaded) {
+            currentLocation = LocationController.getInstance().getLocationById(LocalDatabaseController.getInstance(null).getCurrentLocationID());
+            isLoaded = true;
+        }
         return currentLocation;
     }
 
@@ -32,6 +38,7 @@ public class UserLocationController {
             this.currentEndTime = null;
         }
         this.currentLocation = location;
+        LocalDatabaseController.getInstance(null).setCurrentLocation(location);
     }
 
     public SubLocation getCurrentSubLocation() {

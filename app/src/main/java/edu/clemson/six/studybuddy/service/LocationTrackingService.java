@@ -1,6 +1,7 @@
 package edu.clemson.six.studybuddy.service;
 
 import android.Manifest;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,9 +11,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -20,12 +23,24 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.gson.JsonElement;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
+import edu.clemson.six.studybuddy.controller.FriendController;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.UserLocationController;
+import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
+import edu.clemson.six.studybuddy.controller.net.APIConnector;
+import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 import edu.clemson.six.studybuddy.controller.sql.LocalDatabaseController;
 import edu.clemson.six.studybuddy.view.ChangeLocationActivity;
 
@@ -89,7 +104,7 @@ public class LocationTrackingService extends Service {
         locationManager.removeUpdates(locationListener);
     }
 
-    public static class LTSBinder extends Binder {
+    public class LTSBinder extends Binder {
         private boolean isApplicationActive = true;
 
         public boolean isApplicationActive() {
@@ -98,6 +113,10 @@ public class LocationTrackingService extends Service {
 
         public void setApplicationActive(boolean applicationActive) {
             isApplicationActive = applicationActive;
+        }
+
+        public void stopService() {
+            LocationTrackingService.this.stopSelf();
         }
     }
 
@@ -112,10 +131,9 @@ public class LocationTrackingService extends Service {
                 LocalDatabaseController.getInstance(LocationTrackingService.this);
                 LocationController.getInstance().reload();
             }
-            Log.d(TAG, "Current Location: " + (UserLocationController.getInstance().getCurrentLocation() != null ? UserLocationController.getInstance().getCurrentLocation().getName() : "None"));
+            Log.d(TAG, "Current Location: " + (UserLocationController.getInstance().getCurrentLocation() != null ? UserLocationController.getInstance().getCurrentLocation().getName() + "::" + UserLocationController.getInstance().getCurrentLocation().getId() : "None"));
             boolean hasCurrent = UserLocationController.getInstance().getCurrentLocation() != null;
             for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
-                Log.d(TAG, "Location: " + loc.toString());
 
                 Location point = new Location("dist");
                 point.setLongitude(loc.getLongitude());
@@ -125,13 +143,6 @@ public class LocationTrackingService extends Service {
 
                 if (location.distanceTo(point) < loc.getMapRadius() && !hasCurrent) {
                     UserLocationController.getInstance().setCurrentLocation(loc);
-//                    FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                            MapActivity.ChangeLocationTask t = new MapActivity.ChangeLocationTask();
-//                            t.execute(task.getResult().getToken());
-//                        }
-//                    });
                     if (!binder.isApplicationActive()) {
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(LocationTrackingService.this)
@@ -152,6 +163,8 @@ public class LocationTrackingService extends Service {
                         stackBuilder.addNextIntent(resultIntent);
                         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(resultPendingIntent);
+                        mBuilder.setDefaults(Notification.DEFAULT_ALL);
+                        mBuilder.setPriority(Notification.PRIORITY_HIGH);
 
                         mBuilder.setAutoCancel(true);
 
@@ -161,12 +174,27 @@ public class LocationTrackingService extends Service {
                         mNotificationManager.notify(Constants.NOTIFICATION_LOCATION_CHANGE, mBuilder.build());
                     }
 
+                    //TODO: Remove toast
                     Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
+
+                    FriendController.getInstance().updateNearby();
+                    HomePageAdapter.getInstance().notifyDataSetChanged();
                     break;
                 } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && hasCurrent && UserLocationController.getInstance().getCurrentLocation() == loc) {
+                    //TODO: Remove toast
                     Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                     UserLocationController.getInstance().setCurrentLocation(null);
-                    //TODO: Let server know we aren't there anymore
+                    FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                            ChangeLocationTask t = new ChangeLocationTask();
+                            t.execute(task.getResult().getToken());
+                        }
+                    });
+                    FriendController.getInstance().updateNearby();
+                    HomePageAdapter.getInstance().notifyDataSetChanged();
+
+
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.cancel(Constants.NOTIFICATION_LOCATION_CHANGE);
                     break;
@@ -191,6 +219,24 @@ public class LocationTrackingService extends Service {
         @Override
         public void onProviderDisabled(String provider) {
 
+        }
+    }
+
+    private class ChangeLocationTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            Map<String, String> args = new HashMap<String, String>();
+            args.put("jwt", params[0]);
+            ConnectionDetails dets = APIConnector.setupConnection("user.set_location", args, ConnectionDetails.Method.POST);
+            try {
+                JsonElement el = APIConnector.connect(dets);
+                //TODO: Status check?
+            } catch (IOException e) {
+                Log.e(TAG, "Error sending location left to server", e);
+                return false;
+            }
+            return true;
         }
     }
 }

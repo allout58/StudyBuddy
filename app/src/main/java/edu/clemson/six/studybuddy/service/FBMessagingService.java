@@ -1,5 +1,6 @@
 package edu.clemson.six.studybuddy.service;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -62,6 +63,8 @@ public class FBMessagingService extends FirebaseMessagingService {
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
 
+                mBuilder.setDefaults(Notification.DEFAULT_ALL);
+                mBuilder.setPriority(Notification.PRIORITY_HIGH);
                 mBuilder.setAutoCancel(true);
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

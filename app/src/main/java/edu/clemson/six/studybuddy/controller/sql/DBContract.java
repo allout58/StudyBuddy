@@ -61,4 +61,12 @@ public class DBContract {
         public static final String[] COLUMNS_ALL = {_ID, COLUMN_USER_ID, COLUMN_LAST_TIME};
     }
 
+    public static class CurrentStatusEntry implements BaseColumns {
+        public static final String TABLE_NAME = "CurrentStatus";
+        public static final String COLUMN_CURRENT_LOC = "currentLocation";
+        public static final String COLUMN_CURRENT_SUB_LOC = "currentSubLocation";
+        public static final String COLUMN_CURRENT_END_TIME = "currentEndTime";
+
+        public static final String[] COLUMNS_ALL = {_ID, COLUMN_CURRENT_LOC, COLUMN_CURRENT_SUB_LOC, COLUMN_CURRENT_END_TIME};
+    }
 }

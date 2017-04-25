@@ -24,8 +24,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -49,6 +47,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
+import edu.clemson.six.studybuddy.controller.FriendController;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
@@ -82,7 +81,6 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
 
     TextView textViewUser;
     ImageView imageViewUser;
-    private HomePageAdapter adapter = new HomePageAdapter();
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -162,7 +160,20 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(HomePageAdapter.getInstance());
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FriendController.getInstance().updateNearby();
+                swipeContainer.setRefreshing(false);
+                HomePageAdapter.getInstance().notifyDataSetChanged();
+            }
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
 

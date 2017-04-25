@@ -134,6 +134,11 @@ public class LocalDatabaseController extends DatabaseController {
                 if (loc != null) {
                     sl = loc.getSubLocationByID(c.getInt(c.getColumnIndex(DBContract.FriendsContract.COLUMN_SUBLOCATION)));
                 }
+                long time = c.getLong(c.getColumnIndex(DBContract.FriendsContract.COLUMN_END_TIME));
+                Date dt = null;
+                if (time != 0) {
+                    dt = new Date(time);
+                }
                 Friend friend = new Friend(
                         c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_UID)),
                         c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_IMAGE_URL)),
@@ -141,7 +146,7 @@ public class LocalDatabaseController extends DatabaseController {
                         loc,
                         sl,
                         c.getString(c.getColumnIndex(DBContract.FriendsContract.COLUMN_BLURB)),
-                        new Date(c.getLong(c.getColumnIndex(DBContract.FriendsContract.COLUMN_END_TIME))),
+                        dt,
                         true);
                 l.add(friend);
             } catch (SQLException e) {
@@ -271,7 +276,6 @@ public class LocalDatabaseController extends DatabaseController {
         if (f.getEndTime() != null) {
             cv.put(DBContract.FriendsContract.COLUMN_END_TIME, f.getEndTime().getTime());
         }
-
         try {
             db.insertOrThrow(DBContract.FriendsContract.TABLE_NAME, null, cv);
         } catch (SQLException e) {
@@ -313,5 +317,33 @@ public class LocalDatabaseController extends DatabaseController {
     public void removeRequest(Friend f) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(DBContract.FriendsRequestsContract.TABLE_NAME, DBContract.FriendsRequestsContract.COLUMN_UID + " = ?", new String[]{f.getUid()});
+    }
+
+    public void setCurrentLocation(Location loc) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        int id = -2;
+        if (loc != null) {
+            id = loc.getId();
+        }
+        cv.put(DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC, String.valueOf(id));
+        String selection = DBContract.CurrentStatusEntry._ID + " = ?";
+        String[] args = {"1"};
+        db.update(DBContract.CurrentStatusEntry.TABLE_NAME, cv, selection, args);
+    }
+
+    public int getCurrentLocationID() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(DBContract.CurrentStatusEntry.TABLE_NAME, new String[]{DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC}, null, null, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(cursor.getColumnIndex(DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC));
+            } else {
+                return 0;
+            }
+        } finally {
+            cursor.close();
+        }
     }
 }

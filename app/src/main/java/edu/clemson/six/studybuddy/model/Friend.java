@@ -71,5 +71,4 @@ public class Friend {
     public String getImageURL() {
         return imageURL;
     }
-
 }
