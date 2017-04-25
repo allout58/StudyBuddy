@@ -135,7 +135,7 @@ public class SyncController {
                             image,
                             elO.get("realName").getAsString(),
                             loc, sl, blurb, date, true);
-                    Log.d(TAG, "Friend " + friend.getName() + " " + friend.getUid());
+                    Log.d(TAG, "Friend " + friend.getName() + " " + friend.getUid() + " @ " + (friend.getLocation() == null ? "none" : friend.getLocation().getName()));
                     LocalDatabaseController.getInstance(null).syncFriend(friend);
                 }
                 for (JsonElement el : obj.getAsJsonObject().get("my_requests").getAsJsonArray()) {

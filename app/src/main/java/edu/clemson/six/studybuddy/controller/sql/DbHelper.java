@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "StudyBuddy.db";
 
     private static final String SQL_CREATE_LOC = String.format("CREATE TABLE %s (" +
@@ -83,13 +83,15 @@ public class DbHelper extends SQLiteOpenHelper {
                     "%s INTEGER PRIMARY KEY," +
                     "%s INTEGER," +
                     "%s INTEGER," +
-                    "%s INTEGER" +
+                    "%s INTEGER," +
+                    "%s TEXT" +
                     ")",
             DBContract.CurrentStatusEntry.TABLE_NAME,
             DBContract.CurrentStatusEntry._ID,
             DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC,
             DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC,
-            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME);
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_BLURB);
 
     private static final String SQL_DELETE_LOC = "DROP TABLE IF EXISTS " + DBContract.LocationsContract.TABLE_NAME;
     private static final String SQL_DELETE_SUB_LOC = "DROP TABLE IF EXISTS " + DBContract.SubLocationsContract.TABLE_NAME;
@@ -104,12 +106,13 @@ public class DbHelper extends SQLiteOpenHelper {
             DBContract.UpdateInfoEntry.COLUMN_USER_ID,
             DBContract.UpdateInfoEntry.COLUMN_LAST_TIME);
 
-    private static final String SQL_INITIALIZE_CURRENT_STATUS = String.format("INSERT INTO %s (%s, %s, %s, %s) VALUES (1, -1, -1, 0)",
+    private static final String SQL_INITIALIZE_CURRENT_STATUS = String.format("INSERT INTO %s (%s, %s, %s, %s, %s) VALUES (1, -1, -1, 0, '')",
             DBContract.CurrentStatusEntry.TABLE_NAME,
             DBContract.CurrentStatusEntry._ID,
             DBContract.CurrentStatusEntry.COLUMN_CURRENT_LOC,
             DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC,
-            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME);
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME,
+            DBContract.CurrentStatusEntry.COLUMN_CURRENT_BLURB);
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

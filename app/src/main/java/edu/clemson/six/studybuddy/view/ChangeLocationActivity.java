@@ -21,7 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -34,6 +34,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.UserLocationController;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
@@ -66,6 +67,8 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
     EditText editText;
 
     int hour = 0, minute = 0;
+    @InjectView(R.id.textViewArea)
+    TextView textViewArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,38 +88,48 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
         } else
             textViewTime.setText(R.string.notSet);
 
-        Location loc = UserLocationController.getInstance().getCurrentLocation();
-        SubLocation subloc = UserLocationController.getInstance().getCurrentSubLocation();
-        if (loc != null) {
-            txtViewCurrentLoc.setText(loc.getName());
-            final ArrayAdapter<SubLocation> subLocationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, loc.getSublocations());
-            spinner.setAdapter(subLocationArrayAdapter);
-            if (subloc != null) {
-                spinner.setSelection(subLocationArrayAdapter.getPosition(subloc));
-            }
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (subLocationArrayAdapter.getItem(position) == SubLocation.OTHER) {
-                        editText.setVisibility(View.VISIBLE);
-                        textView.setVisibility(View.VISIBLE);
-                    } else {
+        if (Constants.ACTION_PIN_DROP.equals(getIntent().getAction())) {
+            UserLocationController.getInstance().setCurrentLocation(Location.OTHER);
+            UserLocationController.getInstance().setCurrentSubLocation(SubLocation.OTHER);
+            UserLocationController.getInstance().setCurrentBlurb(getIntent().getStringExtra(Constants.EXTRA_PIN_DROP_NAME));
+            txtViewCurrentLoc.setText(UserLocationController.getInstance().getCurrentBlurb());
+            spinner.setVisibility(View.GONE);
+            textViewArea.setVisibility(View.GONE);
+            editText.setText(getIntent().getStringExtra(Constants.EXTRA_PIN_DROP_NAME));
+        } else {
+            Location loc = UserLocationController.getInstance().getCurrentLocation();
+            SubLocation subloc = UserLocationController.getInstance().getCurrentSubLocation();
+            if (loc != null) {
+                txtViewCurrentLoc.setText(loc.getName());
+                final ArrayAdapter<SubLocation> subLocationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, loc.getSublocations());
+                spinner.setAdapter(subLocationArrayAdapter);
+                if (subloc != null) {
+                    spinner.setSelection(subLocationArrayAdapter.getPosition(subloc));
+                }
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (subLocationArrayAdapter.getItem(position) == SubLocation.OTHER) {
+                            editText.setVisibility(View.VISIBLE);
+                            textView.setVisibility(View.VISIBLE);
+                        } else {
+                            editText.setVisibility(View.GONE);
+                            textView.setVisibility(View.GONE);
+                            editText.setText("");
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
                         editText.setVisibility(View.GONE);
                         textView.setVisibility(View.GONE);
-                        editText.setText("");
                     }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    editText.setVisibility(View.GONE);
-                    textView.setVisibility(View.GONE);
-                }
-            });
-        } else
-            txtViewCurrentLoc.setText("N/A");
-        if (loc == null) {
-            btnSave.setVisibility(View.GONE);
+                });
+            } else
+                txtViewCurrentLoc.setText("N/A");
+            if (loc == null) {
+                btnSave.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -163,28 +176,25 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
 
         @Override
         protected Boolean doInBackground(String... params) {
-            // TODO: Decide if this should be one API call or the three that is is now
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
-            args.put("sublocationID", String.valueOf(UserLocationController.getInstance().getCurrentSubLocation().getId()));
+            args.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
+            if (UserLocationController.getInstance().getCurrentSubLocation() != null) {
+                args.put("sublocationID", String.valueOf(UserLocationController.getInstance().getCurrentSubLocation().getId()));
+            }
             args.put("other", params[1]);
-            Map<String, String> args2 = new HashMap<>();
-            args2.put("jwt", params[0]);
-            Map<String, String> args3 = new HashMap<>();
-            args3.put("jwt", params[0]);
-            args3.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
             if (UserLocationController.getInstance().getCurrentEndTime() != null)
-                args2.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
-            ConnectionDetails dets = APIConnector.setupConnection("user.set_sub_location", args, ConnectionDetails.Method.POST);
-            ConnectionDetails dets2 = APIConnector.setupConnection("user.set_endtime", args2, ConnectionDetails.Method.POST);
-            ConnectionDetails dets3 = APIConnector.setupConnection("user.set_location", args3, ConnectionDetails.Method.POST);
+                args.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
+            ConnectionDetails dets = APIConnector.setupConnection("user.set_status", args, ConnectionDetails.Method.POST);
             try {
-                JsonElement el = APIConnector.connect(dets);
-                JsonElement el2 = APIConnector.connect(dets2);
-                JsonElement el3 = APIConnector.connect(dets3);
-                // TODO Check for success for the API calls??
-                return true;
+                JsonObject el = APIConnector.connect(dets).getAsJsonObject();
+                if (el.has("status") && el.get("status").getAsString().equals("success")) {
+                    return true;
+                } else {
+                    Log.e(TAG, "Error on remote API: " + el.toString());
+                    return false;
+                }
             } catch (IOException e) {
                 Log.e(TAG, "Error connecting to API", e);
             }

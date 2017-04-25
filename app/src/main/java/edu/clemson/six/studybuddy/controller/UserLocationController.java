@@ -16,6 +16,7 @@ public class UserLocationController {
     private Location currentLocation = null;
     private SubLocation currentSubLocation = null;
     private Date currentEndTime = null;
+    private String currentBlurb = null;
 
     private UserLocationController() {
     }
@@ -24,11 +25,23 @@ public class UserLocationController {
         return ourInstance;
     }
 
-    public Location getCurrentLocation() {
+    private void load() {
         if (!isLoaded) {
             currentLocation = LocationController.getInstance().getLocationById(LocalDatabaseController.getInstance(null).getCurrentLocationID());
+            if (currentLocation != null) {
+                currentSubLocation = currentLocation.getSubLocationByID(LocalDatabaseController.getInstance(null).getCurrentSubLocationID());
+            }
+            long et = LocalDatabaseController.getInstance(null).getCurrentEndTime();
+            if (et != 0) {
+                currentEndTime = new Date(et);
+            }
+            currentBlurb = LocalDatabaseController.getInstance(null).getCurrentBlurb();
             isLoaded = true;
         }
+    }
+
+    public Location getCurrentLocation() {
+        load();
         return currentLocation;
     }
 
@@ -42,19 +55,23 @@ public class UserLocationController {
     }
 
     public SubLocation getCurrentSubLocation() {
+        load();
         return currentSubLocation;
     }
 
     public void setCurrentSubLocation(SubLocation subLocation) {
         this.currentSubLocation = subLocation;
+        LocalDatabaseController.getInstance(null).setCurrentSubLocation(subLocation);
     }
 
     public Date getCurrentEndTime() {
+        load();
         return currentEndTime;
     }
 
     public void setCurrentEndTime(Date currentEndTime) {
         this.currentEndTime = currentEndTime;
+        LocalDatabaseController.getInstance(null).setCurrentEndTime(currentEndTime);
     }
 
     /**
@@ -67,5 +84,15 @@ public class UserLocationController {
                 currentSubLocation = currentLocation.getSubLocationByID(currentSubLocation.getId());
             }
         }
+    }
+
+    public String getCurrentBlurb() {
+        load();
+        return currentBlurb;
+    }
+
+    public void setCurrentBlurb(String currentBlurb) {
+        this.currentBlurb = currentBlurb;
+        LocalDatabaseController.getInstance(null).setCurrentBlurb(currentBlurb);
     }
 }

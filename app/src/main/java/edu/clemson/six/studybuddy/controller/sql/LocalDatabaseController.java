@@ -332,6 +332,19 @@ public class LocalDatabaseController extends DatabaseController {
         db.update(DBContract.CurrentStatusEntry.TABLE_NAME, cv, selection, args);
     }
 
+    public void setCurrentSubLocation(SubLocation loc) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        int id = -2;
+        if (loc != null) {
+            id = loc.getId();
+        }
+        cv.put(DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC, String.valueOf(id));
+        String selection = DBContract.CurrentStatusEntry._ID + " = ?";
+        String[] args = {"1"};
+        db.update(DBContract.CurrentStatusEntry.TABLE_NAME, cv, selection, args);
+    }
+
     public int getCurrentLocationID() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -345,5 +358,72 @@ public class LocalDatabaseController extends DatabaseController {
         } finally {
             cursor.close();
         }
+    }
+
+    public int getCurrentSubLocationID() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(DBContract.CurrentStatusEntry.TABLE_NAME, new String[]{DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC}, null, null, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(cursor.getColumnIndex(DBContract.CurrentStatusEntry.COLUMN_CURRENT_SUB_LOC));
+            } else {
+                return 0;
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public long getCurrentEndTime() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(DBContract.CurrentStatusEntry.TABLE_NAME, new String[]{DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME}, null, null, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getLong(cursor.getColumnIndex(DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME));
+            } else {
+                return 0;
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public void setCurrentEndTime(Date time) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        long et = 0;
+        if (time != null) {
+            et = time.getTime();
+        }
+        cv.put(DBContract.CurrentStatusEntry.COLUMN_CURRENT_END_TIME, String.valueOf(et));
+        String selection = DBContract.CurrentStatusEntry._ID + " = ?";
+        String[] args = {"1"};
+        db.update(DBContract.CurrentStatusEntry.TABLE_NAME, cv, selection, args);
+    }
+
+    public String getCurrentBlurb() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(DBContract.CurrentStatusEntry.TABLE_NAME, new String[]{DBContract.CurrentStatusEntry.COLUMN_CURRENT_BLURB}, null, null, null, null, null);
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getString(cursor.getColumnIndex(DBContract.CurrentStatusEntry.COLUMN_CURRENT_BLURB));
+            } else {
+                return null;
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public void setCurrentBlurb(String blurb) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.CurrentStatusEntry.COLUMN_CURRENT_BLURB, blurb);
+        String selection = DBContract.CurrentStatusEntry._ID + " = ?";
+        String[] args = {"1"};
+        db.update(DBContract.CurrentStatusEntry.TABLE_NAME, cv, selection, args);
     }
 }

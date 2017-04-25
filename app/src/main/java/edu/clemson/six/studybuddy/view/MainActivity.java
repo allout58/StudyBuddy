@@ -1,6 +1,7 @@
 package edu.clemson.six.studybuddy.view;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -17,12 +18,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,6 +50,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
@@ -74,13 +80,14 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
     protected SwipeRefreshLayout swipeContainer;
     @InjectView(R.id.main_drawer)
     protected DrawerLayout mainDrawer;
-
-    protected LinearLayoutManager layoutManager;
     @InjectView(R.id.nav_view)
-    NavigationView navView;
-
+    protected NavigationView navView;
+    @InjectView(R.id.btnPinDrop)
+    protected Button btnPinDrop;
+    protected LinearLayoutManager layoutManager;
     TextView textViewUser;
     ImageView imageViewUser;
+    private String pinDropName = "";
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -306,6 +313,37 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
             }
             // Unknown signin response
         }
+    }
+
+    @OnClick(R.id.btnPinDrop)
+    public void onViewClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.title_dialog_pin_drop);
+
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        builder.setView(input);
+
+        builder.setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pinDropName = input.getText().toString();
+                Intent changeLoc = new Intent(MainActivity.this, ChangeLocationActivity.class);
+                changeLoc.setAction(Constants.ACTION_PIN_DROP);
+                changeLoc.putExtra(Constants.EXTRA_PIN_DROP_NAME, pinDropName);
+                startActivity(changeLoc);
+            }
+        });
+        builder.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     public class VerifyTask extends AsyncTask<String, Void, Boolean> {

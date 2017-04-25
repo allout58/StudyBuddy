@@ -45,8 +45,6 @@ StackOverflow - Multiple small problems\n
 
 <b>Libraries</b>\n\n
 <a href="https://github.com/afollestad/sectioned-recyclerview">Sectioned RecyclerView</a>\n
-<a href="https://github.com/daimajia/AndroidViewAnimations">AndroidViewAnimations</a> animation library\n
-<a href="https://github.com/AzeeSoft/AndroidPhotoshopColorPicker">AndroidPhotoshopColorPicker</a> color picker\n
 <a href="http://jakewharton.github.io/butterknife/">ButterKnife</a> binding library\n
 <a href="https://github.com/google/gson">Google GSON</a> JSON library\n
 <a href="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a> utility library\n
@@ -152,4 +150,8 @@ StackOverflow - Multiple small problems\n
     <string name="action_save">Save</string>
     <string name="notSet">Not Set</string>
     <string name="otherLocation">Other:</string>
+    <string name="action_pin_drop">Drop Pin Here</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="title_dialog_pin_drop">Pin Drop Name</string>
 </resources>

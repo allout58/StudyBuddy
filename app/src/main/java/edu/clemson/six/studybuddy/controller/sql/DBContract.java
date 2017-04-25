@@ -66,7 +66,8 @@ public class DBContract {
         public static final String COLUMN_CURRENT_LOC = "currentLocation";
         public static final String COLUMN_CURRENT_SUB_LOC = "currentSubLocation";
         public static final String COLUMN_CURRENT_END_TIME = "currentEndTime";
+        public static final String COLUMN_CURRENT_BLURB = "currentBlurb";
 
-        public static final String[] COLUMNS_ALL = {_ID, COLUMN_CURRENT_LOC, COLUMN_CURRENT_SUB_LOC, COLUMN_CURRENT_END_TIME};
+        public static final String[] COLUMNS_ALL = {_ID, COLUMN_CURRENT_LOC, COLUMN_CURRENT_SUB_LOC, COLUMN_CURRENT_END_TIME, COLUMN_CURRENT_BLURB};
     }
 }
