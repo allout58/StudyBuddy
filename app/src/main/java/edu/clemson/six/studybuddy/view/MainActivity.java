@@ -243,9 +243,6 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
             case R.id.nav_friends:
                 startActivity(new Intent(this, FriendsActivity.class));
                 break;
-            case R.id.nav_map:
-                startActivity(new Intent(this, MapActivity.class));
-                break;
             case R.id.nav_change_loc:
                 startActivity(new Intent(this, ChangeLocationActivity.class));
                 break;
