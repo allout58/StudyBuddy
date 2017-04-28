@@ -1,10 +1,13 @@
 package edu.clemson.six.studybuddy.controller.adapter;
 
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +16,6 @@ import com.squareup.picasso.Picasso;
 
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
-import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
@@ -73,7 +75,7 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
     }
 
     @Override
-    public void onBindViewHolder(FriendViewHolder holder, int section, int relativePosition, final int absolutePosition) {
+    public void onBindViewHolder(final FriendViewHolder holder, final int section, int relativePosition, final int absolutePosition) {
         final Friend f;
         boolean isMine = false;
         switch (section) {
@@ -90,28 +92,66 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
             default:
                 f = null;
         }
-        Button btn = (Button) holder.binding.getRoot().findViewById(R.id.btnConfirmFriend);
+        ImageButton btn = (ImageButton) holder.binding.getRoot().findViewById(R.id.btnMore);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FriendController.getInstance().confirmFriend(f);
-                v.setVisibility(View.GONE);
-            }
-        });
-
-        btn = (Button) holder.binding.getRoot().findViewById(R.id.btnDeleteFriend);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FriendController.getInstance().deleteFriend(f);
-                SyncController.getInstance().syncFriends(new Runnable() {
+                PopupMenu popupMenu = new PopupMenu(holder.binding.getRoot().getContext(), v);
+                switch (section) {
+                    case SECTION_NEAR:
+                    case SECTION_OTHER:
+                        popupMenu.inflate(R.menu.menu_popup_current_friend);
+                        break;
+                    case SECTION_PENDING:
+                        popupMenu.inflate(R.menu.menu_popup_pending_friend);
+                        break;
+                    case SECTION_REQUEST:
+                        popupMenu.inflate(R.menu.menu_popup_request_friend);
+                        break;
+                }
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
-                    public void run() {
-                        notifyDataSetChanged();
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.popup_confirm:
+                                FriendController.getInstance().confirmFriend(f);
+                                return true;
+                            case R.id.popup_delete:
+                                FriendController.getInstance().deleteFriend(f);
+                                return true;
+                            case R.id.popup_send_loc:
+                                Log.d("POPUP", "Sending location");
+                                return true;
+                            default:
+                                return false;
+                        }
                     }
                 });
+                popupMenu.show();
             }
         });
+//        Button btn = (Button) holder.binding.getRoot().findViewById(R.id.btnConfirmFriend);
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FriendController.getInstance().confirmFriend(f);
+//                v.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        btn = (Button) holder.binding.getRoot().findViewById(R.id.btnDeleteFriend);
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FriendController.getInstance().deleteFriend(f);
+//                SyncController.getInstance().syncFriends(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        notifyDataSetChanged();
+//                    }
+//                });
+//            }
+//        });
 
         holder.binding.setFriend(f);
         holder.binding.setIsMine(isMine);

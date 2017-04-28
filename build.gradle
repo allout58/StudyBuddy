@@ -31,12 +31,12 @@ task clean(type: Delete) {
 }
 
 task submitZip(type: Zip) {
-    baseName = 'Team6.p3'
+    baseName = 'Team6.p4'
     from(project.rootDir) {
         exclude('.*/')
         exclude('*.iml')
         exclude('**/build/**/*')
-        exclude 'Team6.p3.zip'
+        exclude 'Team6.p4.zip'
     }
 
 }

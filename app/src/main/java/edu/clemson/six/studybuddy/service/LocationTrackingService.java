@@ -21,7 +21,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -174,15 +173,13 @@ public class LocationTrackingService extends Service {
                         mNotificationManager.notify(Constants.NOTIFICATION_LOCATION_CHANGE, mBuilder.build());
                     }
 
-                    //TODO: Remove toast
-                    Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getBaseContext(), loc.getName() + " Radius Entered", Toast.LENGTH_LONG).show();
 
                     FriendController.getInstance().updateNearby();
                     HomePageAdapter.getInstance().notifyDataSetChanged();
                     break;
                 } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && hasCurrent && UserLocationController.getInstance().getCurrentLocation() == loc) {
-                    //TODO: Remove toast
-                    Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                     UserLocationController.getInstance().setCurrentLocation(null);
                     FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                         @Override

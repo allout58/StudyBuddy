@@ -154,4 +154,6 @@ StackOverflow - Multiple small problems\n
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
     <string name="title_dialog_pin_drop">Pin Drop Name</string>
+    <string name="action_send_loc">Send Location</string>
+    <string name="nearby_friends"><u>Nearby Friends:</u></string>
 </resources>

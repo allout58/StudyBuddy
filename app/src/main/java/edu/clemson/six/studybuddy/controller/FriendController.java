@@ -213,6 +213,13 @@ public class FriendController {
                 return false;
             }
         }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                SyncController.getInstance().syncFriends(null);
+            }
+        }
     }
 
     private class ConfirmFriendTask extends AsyncTask<String, Void, Boolean> {
@@ -231,6 +238,13 @@ public class FriendController {
                 return false;
             }
         }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                SyncController.getInstance().syncFriends(null);
+            }
+        }
     }
 
     private class DeleteFriendTask extends AsyncTask<String, Void, Boolean> {
@@ -247,6 +261,13 @@ public class FriendController {
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                SyncController.getInstance().syncFriends(null);
             }
         }
     }

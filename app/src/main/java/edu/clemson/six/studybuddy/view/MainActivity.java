@@ -126,7 +126,7 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
         // Check firebase authorization
         final FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            Snackbar.make(mainCoordinator, "Already logged in", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(mainCoordinator, "Already logged in", Snackbar.LENGTH_LONG).show();
             auth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                 @Override
                 public void onComplete(@NonNull Task<GetTokenResult> task) {
@@ -246,8 +246,11 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
             case R.id.nav_change_loc:
                 startActivity(new Intent(this, ChangeLocationActivity.class));
                 break;
-            case R.id.nav_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+//            case R.id.nav_settings:
+//                startActivity(new Intent(this, SettingsActivity.class));
+//                break;
+            case R.id.nav_map:
+                startActivity(new Intent(this, MapActivity.class));
                 break;
             case R.id.action_info:
                 startActivity(new Intent(this, InformationActivity.class));

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.clemson.six.studybuddy.controller.adapter.FriendsListAdapter;
 import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
 import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
@@ -96,7 +97,6 @@ public class SyncController {
             ConnectionDetails dets = APIConnector.setupConnection("friend.getall", args, ConnectionDetails.Method.POST);
             try {
                 JsonElement obj = APIConnector.connect(dets);
-                Gson gson = new Gson();
                 Friend friend;
                 if (obj.getAsJsonObject().has("error")) {
                     Log.e(TAG, "Remote error: " + obj.getAsJsonObject().get("error").getAsString());
@@ -180,6 +180,7 @@ public class SyncController {
                     callback.run();
                 }
                 HomePageAdapter.getInstance().notifyDataSetChanged();
+                FriendsListAdapter.getInstance().notifyDataSetChanged();
             }
             super.onPostExecute(booleanResult);
         }
