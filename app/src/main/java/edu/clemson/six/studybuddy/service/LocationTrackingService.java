@@ -78,17 +78,6 @@ public class LocationTrackingService extends Service {
         } else {
             Log.e(TAG, "Unable to get GPS Location permission");
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_WAIT_TIME, UPDATE_MIN_DIST, locationListener);
-            if (last == null) {
-                last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                if (last != null) {
-                    locationListener.onLocationChanged(last);
-                }
-            }
-        } else {
-            Log.e(TAG, "Unable to get Network Location permission");
-        }
     }
 
     @Override
@@ -146,8 +135,8 @@ public class LocationTrackingService extends Service {
                         NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(LocationTrackingService.this)
                                         .setSmallIcon(R.drawable.ic_library_books_black_24dp)
-                                        .setContentTitle("Are you in " + loc.getName() + "?")
-                                        .setContentText("Click here to specify where you are and let your friends know you are here.");
+                                        .setContentTitle(getString(R.string.notif_title_new_location, loc.getName()))
+                                        .setContentText(getString(R.string.notif_text_new_location));
                         // Creates an explicit intent for an Activity in your app
                         Intent resultIntent = new Intent(LocationTrackingService.this, ChangeLocationActivity.class);
 
@@ -199,7 +188,9 @@ public class LocationTrackingService extends Service {
             }
 //            if (minDist > LocationController.getInstance().getMaxRadius() + 30) {
 //                locationManager.removeUpdates(this);
-//
+//                if (ActivityCompat.checkSelfPermission(LocationTrackingService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_WAIT_TIME, UPDATE_MIN_DIST, this);
+//                }
 //            }
         }
 

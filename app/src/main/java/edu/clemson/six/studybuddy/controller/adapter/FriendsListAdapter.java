@@ -2,7 +2,6 @@ package edu.clemson.six.studybuddy.controller.adapter;
 
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
+import edu.clemson.six.studybuddy.controller.UserLocationController;
 import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
@@ -120,7 +120,7 @@ public class FriendsListAdapter extends SectionedRecyclerViewAdapter<FriendsList
                                 FriendController.getInstance().deleteFriend(f);
                                 return true;
                             case R.id.popup_send_loc:
-                                Log.d("POPUP", "Sending location");
+                                UserLocationController.getInstance().sendLocation(f);
                                 return true;
                             default:
                                 return false;

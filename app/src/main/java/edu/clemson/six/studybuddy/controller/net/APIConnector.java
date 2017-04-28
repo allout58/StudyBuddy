@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -75,14 +76,17 @@ public final class APIConnector {
         }
         urlConnection.setConnectTimeout(con.getTimeout());
 
+        String line, text = "";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String line, text = "";
-            while((line=br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 text += line;
             }
             Log.d("APIConnector-Resp", text);
             return new JsonParser().parse(text);
+        } catch (JsonSyntaxException se) {
+            Log.e("APIConnector", "Malformed response:\n\n" + text, se);
+            throw se;
         } finally {
             urlConnection.disconnect();
         }

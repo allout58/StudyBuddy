@@ -22,6 +22,7 @@ public final class Constants {
 
     public static final int NOTIFICATION_LOCATION_CHANGE = 1;
     public static final int NOTIFICATION_FRIEND_ADD = 2;
+    public static final int NOTIFICATION_PUSH_LOC = 3;
 
     public static final String ACTION_PIN_DROP = "ACTION_PIN_DROP";
     public static final String EXTRA_PIN_DROP_NAME = "EXTRA_PDN";

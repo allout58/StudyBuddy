@@ -156,4 +156,11 @@ StackOverflow - Multiple small problems\n
     <string name="title_dialog_pin_drop">Pin Drop Name</string>
     <string name="action_send_loc">Send Location</string>
     <string name="nearby_friends"><u>Nearby Friends:</u></string>
+    <string name="notif_title_new_friend">New Friend Request</string>
+    <string name="notif_text_new_friend">You have a new friend request!</string>
+    <string name="notif_title_new_location">Are you in %1$s?</string>
+    <string name="notif_text_new_location">Click here to let your friends know you are here</string>
+    <string name="notif_title_push_loc">A Friend\'s Location</string>
+    <string name="notif_text_push_loc">A friend has shared their location with you</string>
+    <string name="notif_big_text_push_loc">From %1$s:\nI\'m at</string>
 </resources>

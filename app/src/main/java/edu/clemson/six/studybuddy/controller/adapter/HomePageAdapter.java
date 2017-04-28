@@ -1,15 +1,20 @@
 package edu.clemson.six.studybuddy.controller.adapter;
 
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
+import edu.clemson.six.studybuddy.controller.UserLocationController;
 import edu.clemson.six.studybuddy.databinding.FriendListingViewBinding;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.view.component.CircleTransform;
@@ -32,11 +37,36 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.Friend
     }
 
     @Override
-    public void onBindViewHolder(FriendViewHolder holder, final int position) {
+    public void onBindViewHolder(final FriendViewHolder holder, final int position) {
         final Friend f = FriendController.getInstance().getNearby()[position];
         Log.d(TAG, String.format("Friend: RN %s ET %s", f.getName(), f.getEndTime()));
         holder.binding.setFriend(f);
         holder.binding.setIsMine(false);
+        ImageButton btn = (ImageButton) holder.binding.getRoot().findViewById(R.id.btnMore);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(holder.binding.getRoot().getContext(), v);
+                popupMenu.inflate(R.menu.menu_popup_current_friend);
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.popup_delete:
+                                FriendController.getInstance().deleteFriend(f);
+                                return true;
+                            case R.id.popup_send_loc:
+                                UserLocationController.getInstance().sendLocation(f);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+            }
+        });
         ImageView v = (ImageView) holder.binding.getRoot().findViewById(R.id.imageViewFriend);
         if (!f.getImageURL().isEmpty())
             Picasso.with(holder.parent.getContext())
