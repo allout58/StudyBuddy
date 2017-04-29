@@ -9,9 +9,9 @@
             android:id="@+id/nav_change_loc"
             android:icon="@drawable/ic_edit_location_white_24dp"
             android:title="@string/nav_change_loc" />
-        <item
+        <!--<item
             android:id="@+id/nav_map"
-            android:title="MAP" />
+            android:title="MAP" />-->
         <!--<item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_white_24dp"

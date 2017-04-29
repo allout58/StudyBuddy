@@ -190,14 +190,19 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
         protected Boolean doInBackground(String... params) {
             Map<String, String> args = new HashMap<>();
             args.put("jwt", params[0]);
+            if (UserLocationController.getInstance().getCurrentLocation() == null) {
+                UserLocationController.getInstance().setCurrentLocation(Location.OTHER);
+            }
             args.put("locationID", String.valueOf(UserLocationController.getInstance().getCurrentLocation().getId()));
             if (UserLocationController.getInstance().getCurrentSubLocation() != null) {
                 args.put("sublocationID", String.valueOf(UserLocationController.getInstance().getCurrentSubLocation().getId()));
             }
             args.put("other", params[1]);
             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            if (UserLocationController.getInstance().getCurrentEndTime() != null)
+            if (UserLocationController.getInstance().getCurrentEndTime() != null) {
                 args.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
+                Log.d(TAG, "End time set as " + args.get("endTime"));
+            }
             ConnectionDetails dets = APIConnector.setupConnection("user.set_status", args, ConnectionDetails.Method.POST);
             try {
                 JsonObject el = APIConnector.connect(dets).getAsJsonObject();
