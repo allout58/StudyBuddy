@@ -1,10 +1,15 @@
 package edu.clemson.six.studybuddy.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -96,6 +101,13 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
             spinner.setVisibility(View.GONE);
             textViewArea.setVisibility(View.GONE);
             editText.setText(getIntent().getStringExtra(Constants.EXTRA_PIN_DROP_NAME));
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            android.location.Location last = null;
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                UserLocationController.getInstance().setPinLatitude(last.getLatitude());
+                UserLocationController.getInstance().setPinLongitude(last.getLongitude());
+            }
         } else {
             Location loc = UserLocationController.getInstance().getCurrentLocation();
             SubLocation subloc = UserLocationController.getInstance().getCurrentSubLocation();
@@ -183,7 +195,7 @@ public class ChangeLocationActivity extends SmartAppCompatActivity implements Ti
                 args.put("sublocationID", String.valueOf(UserLocationController.getInstance().getCurrentSubLocation().getId()));
             }
             args.put("other", params[1]);
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             if (UserLocationController.getInstance().getCurrentEndTime() != null)
                 args.put("endTime", sdf.format(UserLocationController.getInstance().getCurrentEndTime()));
             ConnectionDetails dets = APIConnector.setupConnection("user.set_status", args, ConnectionDetails.Method.POST);

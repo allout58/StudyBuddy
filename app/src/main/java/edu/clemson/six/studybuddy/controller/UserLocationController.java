@@ -35,6 +35,8 @@ public class UserLocationController {
     private SubLocation currentSubLocation = null;
     private Date currentEndTime = null;
     private String currentBlurb = null;
+    private double pinLongitude = 0.0;
+    private double pinLatitude = 0.0;
 
     private UserLocationController() {
     }
@@ -127,6 +129,22 @@ public class UserLocationController {
     public void setCurrentBlurb(String currentBlurb) {
         this.currentBlurb = currentBlurb;
         LocalDatabaseController.getInstance(null).setCurrentBlurb(currentBlurb);
+    }
+
+    public double getPinLongitude() {
+        return pinLongitude;
+    }
+
+    public void setPinLongitude(double pinLongitude) {
+        this.pinLongitude = pinLongitude;
+    }
+
+    public double getPinLatitude() {
+        return pinLatitude;
+    }
+
+    public void setPinLatitude(double pinLatitude) {
+        this.pinLatitude = pinLatitude;
     }
 
     private class SendLocationTask extends AsyncTask<String, Void, Boolean> {

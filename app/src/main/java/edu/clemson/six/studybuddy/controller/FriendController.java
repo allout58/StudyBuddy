@@ -106,10 +106,12 @@ public class FriendController {
         if (loc != null && loc.getId() != this.lastLocation) {
             Log.d(TAG, "Updating nearby: " + loc.getName());
             nearby.clear();
-            for (Friend f : friends) {
-                if (f.getLocation() != null && f.getLocation().getId() == loc.getId()) {
-                    nearby.add(f);
-                    Log.d(TAG, "Adding friend " + f.getName());
+            if (loc != Location.OTHER) {
+                for (Friend f : friends) {
+                    if (f.getLocation() != null && f.getLocation().getId() == loc.getId()) {
+                        nearby.add(f);
+                        Log.d(TAG, "Adding friend " + f.getName());
+                    }
                 }
             }
             lastLocation = loc.getId();

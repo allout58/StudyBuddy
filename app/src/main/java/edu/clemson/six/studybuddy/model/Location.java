@@ -9,7 +9,7 @@ import java.util.Locale;
  */
 
 public class Location {
-    public static final Location OTHER = new Location(-1, 0, 0, 0, "-Other-");
+    public static final Location OTHER = new Location(-1, 0, 0, 30.0, "-Other-");
 
     private final int locationID;
     private final double longitude, latitude;

@@ -25,9 +25,8 @@ import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.view.FriendsActivity;
 
 /**
- * Created by jthollo on 4/13/2017.
+ * Background service for receiving Firebase Cloud Messages
  */
-
 public class FBMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FBMessaging";
 
@@ -85,17 +84,10 @@ public class FBMessagingService extends FirebaseMessagingService {
                                 .setSmallIcon(R.drawable.ic_library_books_black_24dp)
                                 .setContentTitle(getString(R.string.notif_title_push_loc))
                                 .setContentText(getString(R.string.notif_text_push_loc));
-                // Creates an explicit intent for an Activity in your app
                 Intent resultIntent = new Intent(this, FriendsActivity.class);
 
-                // The stack builder object will contain an artificial back stack for the
-                // started Activity.
-                // This ensures that navigating backward from the Activity leads out of
-                // your application to the Home screen.
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                // Adds the back stack for the Intent (but not the Intent itself)
                 stackBuilder.addParentStack(FriendsActivity.class);
-                // Adds the Intent that starts the Activity to the top of the stack
                 stackBuilder.addNextIntent(resultIntent);
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
@@ -115,15 +107,17 @@ public class FBMessagingService extends FirebaseMessagingService {
                     sb.append(data.get("blurb"));
                 }
 
+                // Allows us to set the text when a user expands the notification
                 mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(sb.toString()));
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 // mId allows you to update the notification later on.
                 mNotificationManager.notify(Constants.NOTIFICATION_PUSH_LOC, mBuilder.build());
+            } else if ("upd_locs".equals(action)) {
+                SyncController.getInstance().syncLocations(null);
             }
         }
-//        Log.d(TAG, "Message " + remoteMessage.getNotification().getBody());
     }
 
 }

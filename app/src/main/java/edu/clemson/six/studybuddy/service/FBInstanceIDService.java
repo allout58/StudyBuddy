@@ -21,7 +21,7 @@ import edu.clemson.six.studybuddy.controller.net.APIConnector;
 import edu.clemson.six.studybuddy.controller.net.ConnectionDetails;
 
 /**
- * Created by jthollo on 4/13/2017.
+ * Background service for notifying the server when this user's Firebase Registration ID changes
  */
 
 public class FBInstanceIDService extends FirebaseInstanceIdService {

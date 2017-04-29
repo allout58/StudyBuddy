@@ -124,8 +124,13 @@ public class LocationTrackingService extends Service {
             for (edu.clemson.six.studybuddy.model.Location loc : LocationController.getInstance().getAllLocations()) {
 
                 Location point = new Location("dist");
-                point.setLongitude(loc.getLongitude());
-                point.setLatitude(loc.getLatitude());
+                if (loc == edu.clemson.six.studybuddy.model.Location.OTHER) {
+                    point.setLongitude(UserLocationController.getInstance().getPinLongitude());
+                    point.setLongitude(UserLocationController.getInstance().getPinLatitude());
+                } else {
+                    point.setLongitude(loc.getLongitude());
+                    point.setLatitude(loc.getLatitude());
+                }
 
                 minDist = Math.min(minDist, location.distanceTo(point));
 
