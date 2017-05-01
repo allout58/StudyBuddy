@@ -175,6 +175,9 @@ public class LocationTrackingService extends Service {
                 } else if (location.distanceTo(point) > loc.getMapRadius() + 15 && hasCurrent && UserLocationController.getInstance().getCurrentLocation() == loc) {
 //                    Toast.makeText(getBaseContext(), loc.getName() + " Radius Exited", Toast.LENGTH_LONG).show();
                     UserLocationController.getInstance().setCurrentLocation(null);
+                    UserLocationController.getInstance().setCurrentBlurb("");
+                    UserLocationController.getInstance().setCurrentEndTime(null);
+                    UserLocationController.getInstance().setCurrentSubLocation(null);
                     FirebaseAuth.getInstance().getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                         @Override
                         public void onComplete(@NonNull Task<GetTokenResult> task) {
@@ -222,8 +225,10 @@ public class LocationTrackingService extends Service {
             Map<String, String> args = new HashMap<String, String>();
             args.put("jwt", params[0]);
             ConnectionDetails dets = APIConnector.setupConnection("user.set_location", args, ConnectionDetails.Method.POST);
+            ConnectionDetails dets2 = APIConnector.setupConnection("user.set_endtime", args, ConnectionDetails.Method.POST);
             try {
                 JsonElement el = APIConnector.connect(dets);
+                JsonElement el2 = APIConnector.connect(dets2);
                 //TODO: Status check?
             } catch (IOException e) {
                 Log.e(TAG, "Error sending location left to server", e);

@@ -19,7 +19,6 @@ import edu.clemson.six.studybuddy.R;
 import edu.clemson.six.studybuddy.controller.FriendController;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
-import edu.clemson.six.studybuddy.controller.adapter.FriendsListAdapter;
 import edu.clemson.six.studybuddy.model.Friend;
 import edu.clemson.six.studybuddy.model.Location;
 import edu.clemson.six.studybuddy.view.FriendsActivity;
@@ -39,12 +38,7 @@ public class FBMessagingService extends FirebaseMessagingService {
             String action = data.get("action");
             if ("moved".equals(action)) {
                 Log.d(TAG, "Friend Moved");
-                SyncController.getInstance().syncFriends(new Runnable() {
-                    @Override
-                    public void run() {
-                        FriendsListAdapter.getInstance().notifyDataSetChanged();
-                    }
-                });
+                SyncController.getInstance().syncFriends(null);
             } else if ("request".equals(action)) {
                 Log.d(TAG, "New friend request");
                 NotificationCompat.Builder mBuilder =
