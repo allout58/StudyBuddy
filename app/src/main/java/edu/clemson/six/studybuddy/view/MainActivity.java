@@ -53,7 +53,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import edu.clemson.six.studybuddy.Constants;
 import edu.clemson.six.studybuddy.R;
-import edu.clemson.six.studybuddy.controller.FriendController;
 import edu.clemson.six.studybuddy.controller.LocationController;
 import edu.clemson.six.studybuddy.controller.SyncController;
 import edu.clemson.six.studybuddy.controller.adapter.HomePageAdapter;
@@ -172,9 +171,13 @@ public class MainActivity extends SmartAppCompatActivity implements NavigationVi
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                FriendController.getInstance().updateNearby();
-                swipeContainer.setRefreshing(false);
-                HomePageAdapter.getInstance().notifyDataSetChanged();
+                SyncController.getInstance().syncFriends(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeContainer.setRefreshing(false);
+                    }
+                });
+
             }
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
